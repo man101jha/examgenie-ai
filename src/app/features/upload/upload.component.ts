@@ -20,6 +20,7 @@ export class UploadComponent {
   isExtracting = false;
   selectedFile: File | null = null;
   loadingStep = '';
+  errorMessage = '';
 
   // Dialog state
   showGenerateDialog = false;
@@ -57,6 +58,7 @@ export class UploadComponent {
     if (!this.selectedFile) return;
 
     this.isExtracting = true;
+    this.errorMessage = '';
     this.loadingStep = 'Reading PDF with AI...';
 
     this.pdfExtractor.extractQuestionsFromPdf(this.selectedFile)
@@ -64,7 +66,6 @@ export class UploadComponent {
       .subscribe({
         next: ({ questions, title }) => {
           if (questions.length === 0) {
-            // No questions found — ask user to generate
             this.isExtracting = false;
             this.showGenerateDialog = true;
           } else {
@@ -73,9 +74,14 @@ export class UploadComponent {
             this.router.navigate(['/exam']);
           }
         },
-        error: () => {
+        error: (err: any) => {
           this.isExtracting = false;
           this.loadingStep = '';
+          if (err?.message?.includes('429') || err?.message?.includes('quota')) {
+            this.errorMessage = 'Google API Free Tier rate limit reached. Please wait 15 seconds and try again.';
+          } else {
+            this.errorMessage = 'An error occurred while analyzing the document.';
+          }
         }
       });
   }
@@ -85,6 +91,7 @@ export class UploadComponent {
 
     this.showGenerateDialog = false;
     this.isGenerating = true;
+    this.errorMessage = '';
     this.loadingStep = `Generating ${this.selectedCount} ${this.selectedDifficulty} questions from PDF...`;
 
     this.pdfExtractor
@@ -95,7 +102,14 @@ export class UploadComponent {
           this.examService.startExam(questions, title);
           this.router.navigate(['/exam']);
         },
-        error: () => { this.loadingStep = ''; }
+        error: (err: any) => {
+          this.loadingStep = '';
+          if (err?.message?.includes('429') || err?.message?.includes('quota')) {
+             this.errorMessage = 'Google API Free Tier rate limit reached. Please wait 15 seconds and try again.';
+          } else {
+             this.errorMessage = 'An error occurred while generating the exam.';
+          }
+        }
       });
   }
 

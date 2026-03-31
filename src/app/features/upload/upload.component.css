@@ -296,6 +296,22 @@
 }
 .file-success { font-size: 13px; color: #16a34a; justify-content: center; }
 
+/* Error Banner */
+.error-banner {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #ef4444;
+  padding: 12px 16px;
+  border-radius: 12px;
+  margin-bottom: 20px;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.5;
+}
+
 /* Generate Button */
 .btn-generate {
   display: flex;

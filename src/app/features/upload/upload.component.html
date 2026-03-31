@@ -94,6 +94,12 @@
         </span>
       </div>
 
+      <!-- Error Banner -->
+      <div class="error-banner" *ngIf="errorMessage">
+        <lucide-icon [img]="FileText" [size]="16"></lucide-icon>
+        <span>{{ errorMessage }}</span>
+      </div>
+
       <button class="btn-generate w-full"
               [disabled]="!selectedFile || isExtracting"
               (click)="startExtraction()">
