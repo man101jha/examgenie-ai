@@ -1,0 +1,158 @@
+<div class="home-container">
+
+  <!-- Loading Overlay -->
+  <div class="loading-overlay" *ngIf="isExtracting || isGenerating">
+    <div class="loading-card">
+      <div class="pulse-rings">
+        <span></span><span></span><span></span>
+      </div>
+      <div class="loading-title">ExamGenie is thinking...</div>
+      <div class="loading-step">{{ loadingStep }}</div>
+      <div class="loading-dots">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Left Panel: Branding + Features -->
+  <div class="left-panel" *ngIf="!showGenerateDialog">
+    <div class="brand">
+      <img src="logo.png" alt="ExamGenie Logo" class="brand-logo">
+      <div>
+        <div class="brand-name">ExamGenie</div>
+        <div class="brand-tagline">AI-Powered Exam Generator</div>
+      </div>
+    </div>
+
+    <h1 class="hero-title">Turn any PDF into<br><span class="highlight">a smart exam</span></h1>
+    <p class="hero-sub">Upload your question paper or study material and let AI do the rest — instantly creating an interactive exam with answers, scoring, and step-by-step explanations.</p>
+
+    <div class="features-list">
+      <div class="feature-item">
+        <div class="feat-icon">📄</div>
+        <div>
+          <div class="feat-title">Upload Any PDF</div>
+          <div class="feat-desc">Question papers, textbook chapters, study notes — any PDF works</div>
+        </div>
+      </div>
+      <div class="feature-item">
+        <div class="feat-icon">🤖</div>
+        <div>
+          <div class="feat-title">AI Extraction & Generation</div>
+          <div class="feat-desc">Extracts existing questions or generates new ones at Easy, Medium or Hard level</div>
+        </div>
+      </div>
+      <div class="feature-item">
+        <div class="feat-icon">📊</div>
+        <div>
+          <div class="feat-title">Real-time Exam Interface</div>
+          <div class="feat-desc">Question palette, mark for review, timer-ready layout — just like real exams</div>
+        </div>
+      </div>
+      <div class="feature-item">
+        <div class="feat-icon">💡</div>
+        <div>
+          <div class="feat-title">AI-Powered Solutions</div>
+          <div class="feat-desc">After submitting, view color-coded answers and on-demand AI explanations</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- About / Developer Section -->
+    <div class="about-section">
+      <div class="about-divider"></div>
+      <div class="about-content">
+        <div class="about-text">
+          <div class="about-label">Built by</div>
+          <div class="about-name">Mangesh Jha</div>
+          <a href="mailto:mangesh105jha@gmail.com" class="about-email">mangesh105jha&#64;gmail.com</a>
+        </div>
+        <div class="about-badge">
+          ExamGenie uses Google Gemini AI to intelligently parse documents
+          and craft personalized exams — making self-assessment smarter and effortless.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Right Panel: Upload Card -->
+  <div class="right-panel" *ngIf="!showGenerateDialog">
+    <div class="upload-card">
+      <h2 class="card-title">Start Your Exam</h2>
+      <p class="card-sub">Upload a PDF to get started</p>
+
+      <div class="upload-area flex-col items-center justify-center"
+           [class.has-file]="selectedFile"
+           (click)="fileInput.click()">
+        <input type="file" #fileInput hidden (change)="onFileSelected($event)" accept="application/pdf">
+        <lucide-icon [img]="selectedFile ? FileText : UploadCloud" [size]="44" class="upload-icon"></lucide-icon>
+        <span class="upload-text" *ngIf="!selectedFile">Click to browse or drag &amp; drop PDF</span>
+        <span class="file-name" *ngIf="selectedFile">{{ selectedFile.name }}</span>
+        <span class="file-success flex items-center gap-1" *ngIf="selectedFile">
+          <lucide-icon [img]="CheckCircle2" [size]="14"></lucide-icon>
+          Ready to process
+        </span>
+      </div>
+
+      <button class="btn-generate w-full"
+              [disabled]="!selectedFile || isExtracting"
+              (click)="startExtraction()">
+        <lucide-icon [img]="Sparkles" [size]="18"></lucide-icon>
+        Generate Exam with AI
+      </button>
+
+      <div class="how-it-works">
+        <div class="how-title">How it works</div>
+        <div class="how-steps">
+          <div class="how-step"><span class="step-num">1</span> Upload PDF</div>
+          <div class="how-arrow">→</div>
+          <div class="how-step"><span class="step-num">2</span> AI Processes</div>
+          <div class="how-arrow">→</div>
+          <div class="how-step"><span class="step-num">3</span> Take Exam</div>
+          <div class="how-arrow">→</div>
+          <div class="how-step"><span class="step-num">4</span> View Results</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Generate Dialog (No questions in PDF) -->
+  <div class="generate-dialog" *ngIf="showGenerateDialog && !isGenerating">
+    <div class="dialog-back" (click)="cancelGenerate()">← Back</div>
+    <div class="dialog-icon">🤖</div>
+    <h2 class="dialog-title">No Questions Found in PDF</h2>
+    <p class="dialog-subtitle">
+      This document doesn't contain extractable exam questions. ExamGenie can
+      <strong>generate a custom exam</strong> from its content — just pick your settings below.
+    </p>
+
+    <div class="section-label">Difficulty Level</div>
+    <div class="difficulty-grid">
+      <button class="diff-btn" *ngFor="let d of difficultyOptions"
+              [class.active]="selectedDifficulty === d.value"
+              (click)="selectedDifficulty = d.value">
+        <span class="diff-emoji">{{ d.value === 'easy' ? '😊' : d.value === 'medium' ? '🧠' : '🔥' }}</span>
+        <span class="diff-label">{{ d.label }}</span>
+        <span class="diff-desc">{{ d.desc }}</span>
+      </button>
+    </div>
+
+    <div class="section-label">Number of Questions</div>
+    <div class="count-grid">
+      <button class="count-btn" *ngFor="let c of countOptions"
+              [class.active]="selectedCount === c"
+              (click)="selectedCount = c">
+        {{ c }}
+      </button>
+    </div>
+
+    <div class="dialog-actions flex gap-3">
+      <button class="btn-outline flex-1" (click)="cancelGenerate()">Cancel</button>
+      <button class="btn-generate flex-1" (click)="generateFromContent()">
+        <lucide-icon [img]="Sparkles" [size]="16"></lucide-icon>
+        Generate {{ selectedCount }} Questions
+      </button>
+    </div>
+  </div>
+
+</div>

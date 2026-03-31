@@ -1,0 +1,38 @@
+<div class="palette-layout flex-col h-full">
+  <div class="palette-grid">
+    <button *ngFor="let q of state().questions; let i = index" 
+            class="q-bubble flex items-center justify-center"
+            [ngClass]="getStatusClass(state().questionStatuses[q.id])"
+            (click)="goTo(i)">
+      {{ i + 1 }}
+      <div class="small-dot" *ngIf="state().questionStatuses[q.id] === 'ANSWERED_MARKED_FOR_REVIEW'"></div>
+    </button>
+  </div>
+
+  <div class="legend">
+    <div class="legend-row flex items-center">
+      <div class="legend-item flex items-center"><div class="bubble answered"></div><span>ANSWERED</span></div>
+      <div class="legend-item flex items-center"><div class="bubble not-answered"></div><span>NOT ANSWERED</span></div>
+    </div>
+    <div class="legend-row flex items-center">
+      <div class="legend-item flex items-center"><div class="bubble marked"></div><span>MARKED FOR REVIEW</span></div>
+      <div class="legend-item flex items-center"><div class="bubble not-visited"></div><span>NOT VISITED</span></div>
+    </div>
+    <div class="legend-row flex items-center">
+      <div class="legend-item flex items-center"><div class="bubble answered-marked"><div class="small-dot"></div></div><span>ANSWERED & MARKED FOR REVIEW</span></div>
+    </div>
+  </div>
+
+  <div class="tabs flex">
+    <button class="palette-tab" [class.active]="activeTab === 'ALL_QUESTION'" (click)="activeTab = 'ALL_QUESTION'">ALL QUESTION</button>
+    <button class="palette-tab" [class.active]="activeTab === 'INSTRUCTION'" (click)="activeTab = 'INSTRUCTION'">INSTRUCTION</button>
+  </div>
+
+  <div class="copyright">© COPYRIGHT 2026</div>
+
+  <div class="submit-box w-full">
+    <button class="submit-btn w-full flex items-center justify-center" (click)="submitRequested.emit()">
+      SUBMIT
+    </button>
+  </div>
+</div>

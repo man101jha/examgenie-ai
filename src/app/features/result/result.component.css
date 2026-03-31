@@ -1,0 +1,161 @@
+.result-layout {
+  background: var(--bg-dark); /* #0f172a */
+  color: white;
+  min-height: 100vh;
+}
+
+.header {
+  height: 60px;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.back-btn {
+  width: 60px;
+  height: 100%;
+  background: transparent;
+  color: var(--text-light);
+}
+.back-btn:hover { background: rgba(255,255,255,0.05); }
+
+.exam-title {
+  padding-left: 16px;
+  font-size: 20px;
+  font-weight: 500;
+}
+
+.header-right {
+  padding-right: 24px;
+}
+
+.dropdown-btn {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  color: var(--text-light);
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 13px;
+}
+
+.result-card {
+  background: var(--card-dark); /* #1e293b */
+  border-radius: 12px;
+  padding: 32px;
+}
+
+.left-card {
+  width: 300px;
+}
+
+.score-header {
+  font-size: 16px;
+  color: var(--text-light);
+  margin-bottom: 24px;
+}
+
+.score-display {
+  margin-bottom: 32px;
+}
+
+.score-main {
+  font-size: 48px;
+  font-weight: 400;
+  line-height: 1;
+  margin-bottom: 8px;
+}
+
+.score-sub {
+  font-size: 14px;
+  color: #94a3b8;
+}
+
+.stats-list {
+  gap: 16px;
+  margin-bottom: 32px;
+}
+
+.stat-item .label {
+  color: #94a3b8;
+  font-size: 14px;
+}
+
+.stat-item .val {
+  color: white;
+  font-weight: 500;
+  font-size: 14px;
+}
+
+.view-solution-btn {
+  background: #ffb4a2; /* Salmon color */
+  color: #7b2c2c; /* Dark reddish text */
+  padding: 14px;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 13px;
+}
+.view-solution-btn:hover {
+  background: #ffc4b5;
+}
+
+.right-card {
+  padding: 32px 40px;
+}
+
+.rings-container {
+  margin-top: 20px;
+  margin-bottom: 40px;
+}
+
+.ring-pack {
+  gap: 16px;
+}
+
+.ring-wrap {
+  position: relative;
+  width: 100px;
+  height: 100px;
+}
+
+.ring {
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+
+.ring-bg {
+  fill: transparent;
+  stroke: rgba(255,255,255,0.05);
+  stroke-width: 3;
+}
+
+.ring-fill {
+  fill: transparent;
+  stroke-width: 3;
+  stroke-linecap: round;
+  transition: stroke-dasharray 1s ease;
+}
+
+.correct-fill { stroke: var(--success); }
+.incorrect-fill { stroke: var(--danger); }
+.negative-fill { stroke: #f472b6; /* pinkish */ }
+
+.ring-value {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 24px;
+  font-weight: 400;
+}
+
+.ring-label {
+  font-size: 13px;
+  color: white;
+}
+
+.summary-text {
+  color: #94a3b8;
+  font-size: 13px;
+  line-height: 1.6;
+}
+.summary-text strong {
+  font-weight: 500;
+}

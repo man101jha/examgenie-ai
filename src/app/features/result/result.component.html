@@ -1,0 +1,114 @@
+<div class="result-layout h-full flex flex-col">
+  <header class="header flex items-center justify-between">
+    <div class="flex items-center">
+      <button class="back-btn flex items-center justify-center" (click)="goBack()">
+        <lucide-icon [img]="ArrowLeft" [size]="20"></lucide-icon>
+      </button>
+      <span class="exam-title text-white">{{ state().examTitle }}</span>
+    </div>
+    
+    <div class="header-right">
+      <button class="dropdown-btn flex items-center gap-2">
+        Latest Attempt... <lucide-icon [img]="ChevronDown" [size]="14"></lucide-icon>
+      </button>
+    </div>
+  </header>
+
+  <div class="content flex justify-center content-center h-full items-center p-6" *ngIf="state().isSubmitted">
+    <div class="cards-container flex gap-6 w-full max-w-5xl">
+      
+      <!-- Left Card -->
+      <div class="result-card left-card flex-col">
+        <div class="score-header text-center">Your Score</div>
+        
+        <div class="score-display flex-col items-center">
+          <div class="score-main">{{ stats.score }}</div>
+          <div class="score-sub">out of {{ stats.totalMarks }}</div>
+        </div>
+
+        <div class="stats-list flex-col">
+          <div class="stat-item flex justify-between">
+            <span class="label">Percentile</span>
+            <span class="val">N/A</span>
+          </div>
+          <div class="stat-item flex justify-between">
+            <span class="label">Accuracy</span>
+            <span class="val">{{ stats.accuracy }}%</span>
+          </div>
+          <div class="stat-item flex justify-between">
+            <span class="label">Percentage</span>
+            <span class="val">{{ stats.percentage }}%</span>
+          </div>
+        </div>
+
+        <button class="view-solution-btn w-full" (click)="viewSolution()">VIEW SOLUTION</button>
+      </div>
+
+      <!-- Right Card -->
+      <div class="result-card right-card flex-col flex-1">
+        <div class="score-header">Total Marks {{ stats.totalMarks }}</div>
+
+        <div class="rings-container flex justify-between items-center">
+          <!-- Correct Ring -->
+          <div class="ring-pack flex-col items-center">
+            <div class="ring-wrap">
+              <svg class="ring" viewBox="0 0 70 70">
+                <circle class="ring-bg" cx="35" cy="35" r="30" />
+                <circle class="ring-fill correct-fill" cx="35" cy="35" r="30" 
+                        [attr.stroke-dasharray]="getRingDashArray(stats.correctMarks, stats.totalMarks)" />
+              </svg>
+              <span class="ring-value">{{ stats.correctMarks }}</span>
+            </div>
+            <span class="ring-label">Correct</span>
+          </div>
+
+          <!-- Incorrect Ring -->
+          <div class="ring-pack flex-col items-center">
+            <div class="ring-wrap">
+              <svg class="ring" viewBox="0 0 70 70">
+                <circle class="ring-bg" cx="35" cy="35" r="30" />
+                <circle class="ring-fill incorrect-fill" cx="35" cy="35" r="30" 
+                        [attr.stroke-dasharray]="getRingDashArray(stats.incorrectMarks, stats.totalMarks)" />
+              </svg>
+              <span class="ring-value -danger">-{{ stats.incorrectMarks }}</span>
+            </div>
+            <span class="ring-label">Incorrect</span>
+          </div>
+
+          <!-- Negative Ring -->
+          <div class="ring-pack flex-col items-center">
+            <div class="ring-wrap">
+              <svg class="ring" viewBox="0 0 70 70">
+                <circle class="ring-bg" cx="35" cy="35" r="30" />
+                <circle class="ring-fill negative-fill" cx="35" cy="35" r="30" 
+                        [attr.stroke-dasharray]="getRingDashArray(stats.negativeMarks, stats.totalMarks)" />
+              </svg>
+              <span class="ring-value -danger">-{{ stats.negativeMarks }}</span>
+            </div>
+            <span class="ring-label">Negative Marking</span>
+          </div>
+
+          <!-- Skipped Ring -->
+          <div class="ring-pack flex-col items-center">
+            <div class="ring-wrap">
+              <svg class="ring" viewBox="0 0 70 70">
+                <circle class="ring-bg" cx="35" cy="35" r="30" />
+                <circle class="ring-fill skipped-fill" cx="35" cy="35" r="30" stroke-dasharray="0 1000" />
+              </svg>
+              <span class="ring-value">0</span>
+            </div>
+            <span class="ring-label">Skipped</span>
+          </div>
+        </div>
+
+        <div class="summary-text mt-auto">
+          You have scored <strong class="text-white">{{ stats.correctMarks }} marks</strong> for correct answers, 
+          missed <strong class="text-white">{{ stats.incorrectMarks }} marks</strong> on incorrect answers, 
+          lost <strong class="text-white">{{ stats.negativeMarks }} marks</strong> due to negative marking and 
+          <strong class="text-white">0 marks</strong> by skipping questions.
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>

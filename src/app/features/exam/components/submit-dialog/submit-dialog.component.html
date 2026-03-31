@@ -1,0 +1,15 @@
+<div class="overlay">
+  <div class="dialog">
+    <button class="close-btn flex items-center justify-center" (click)="cancel.emit()">
+      <lucide-icon [img]="X" [size]="20"></lucide-icon>
+    </button>
+    
+    <h2>Submit Quiz</h2>
+    <p>When you are ready, click Submit button</p>
+    
+    <div class="actions flex-col">
+      <button class="btn-success w-full submit-btn" (click)="confirm.emit()">SUBMIT</button>
+      <button class="btn-cancel w-full" (click)="cancel.emit()">CANCEL</button>
+    </div>
+  </div>
+</div>

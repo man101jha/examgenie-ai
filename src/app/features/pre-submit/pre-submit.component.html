@@ -1,0 +1,46 @@
+<div class="pre-submit-layout h-full flex flex-col">
+  <header class="header flex items-center">
+    <button class="back-btn flex items-center justify-center" (click)="goBack()">
+      <lucide-icon [img]="ArrowLeft" [size]="20"></lucide-icon>
+    </button>
+    <span class="exam-title">{{ state().examTitle }}</span>
+  </header>
+
+  <div class="content flex flex-col items-center">
+    <h2>Submit Quiz</h2>
+    <p class="subtitle">Before you submit the test, please make sure you<br>have attended all the questions</p>
+
+    <div class="stats-card flex-col">
+      <div class="stat-row flex items-center justify-between">
+        <span class="stat-label">Total Questions</span>
+        <span class="stat-value">{{ stats.total }}</span>
+      </div>
+      
+      <div class="stat-row flex items-center justify-between">
+        <div class="stat-label flex items-center gap-2">
+          <div class="dot bg-success"></div> Answered
+        </div>
+        <span class="stat-value">{{ stats.answered }}</span>
+      </div>
+
+      <div class="stat-row flex items-center justify-between">
+        <div class="stat-label flex items-center gap-2">
+          <div class="dot bg-danger"></div> Skipped/Unattempted
+        </div>
+        <span class="stat-value">{{ stats.skipped }}</span>
+      </div>
+
+      <div class="stat-row flex items-center justify-between">
+        <div class="stat-label flex items-center gap-2">
+          <div class="dot bg-review"></div> Mark for review
+        </div>
+        <span class="stat-value">{{ stats.marked }}</span>
+      </div>
+    </div>
+
+    <button class="btn-success submit-btn w-full max-w-sm" (click)="finalSubmit()">SUBMIT</button>
+    <button class="back-link flex items-center gap-2" (click)="goBack()">
+      <lucide-icon [img]="ArrowLeft" [size]="16"></lucide-icon> BACK TO TEST
+    </button>
+  </div>
+</div>

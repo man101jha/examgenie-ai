@@ -1,0 +1,67 @@
+<div class="viewer-layout flex flex-col h-full" *ngIf="currentQuestion as q">
+  
+  <div class="q-header flex items-center justify-between">
+    <div class="q-number">Q. {{ state().currentQuestionIndex + 1 }} of {{ state().questions.length }}</div>
+    <button class="icon-btn" (click)="toggleMarkForReview()" [class.active-flag]="isMarkedForReview">
+      <lucide-icon [img]="Flag" [size]="18"></lucide-icon>
+    </button>
+  </div>
+
+  <div class="q-content flex-col">
+    <div class="q-text" [innerHTML]="q.text"></div>
+
+    <!-- Multiple Choice (Options) -->
+    <div class="options-list flex-col" *ngIf="q.options && q.options.length > 0">
+      <label class="option-item flex items-center" *ngFor="let opt of q.options" 
+             [class.selected]="selectedOption === opt.id">
+        <div class="radio-circle flex items-center justify-center" [class.checked]="selectedOption === opt.id">
+          <span class="opt-label" *ngIf="selectedOption !== opt.id">{{ opt.id }}</span>
+          <div class="dot" *ngIf="selectedOption === opt.id"></div>
+        </div>
+        <input type="radio" [name]="q.id" [value]="opt.id" 
+               [checked]="selectedOption === opt.id" 
+               (change)="selectOption(opt.id)" hidden>
+        <span class="opt-text" [innerHTML]="opt.text"></span>
+      </label>
+    </div>
+
+    <!-- Subjective Type (No Options) -->
+    <div class="subjective-input w-full" *ngIf="!q.options || q.options.length === 0">
+      <input type="text" class="text-answer-input" 
+             placeholder="Type your answer here..."
+             [ngModel]="selectedOption || ''"
+             (ngModelChange)="onTextInput($event)" />
+    </div>
+  </div>
+
+  <div class="bottom-bar flex items-center justify-between">
+    <div class="left-actions flex gap-4">
+      <button class="action-btn flex items-center gap-2" (click)="toggleMarkForReview()">
+        <lucide-icon [img]="Star" [size]="16" [class.filled]="isMarkedForReview"></lucide-icon>
+        MARK FOR REVIEW
+      </button>
+      <button class="action-btn flex items-center gap-2" (click)="clearResponse()" [disabled]="!selectedOption">
+        <lucide-icon [img]="Trash2" [size]="16"></lucide-icon>
+        CLEAR
+      </button>
+    </div>
+
+    <div class="center-nav flex items-center gap-4">
+      <button class="nav-arrow" (click)="prev()" [disabled]="state().currentQuestionIndex === 0">
+        <lucide-icon [img]="ChevronLeft" [size]="20"></lucide-icon>
+      </button>
+      <span class="nav-text">{{ state().currentQuestionIndex + 1 }} of {{ state().questions.length }}</span>
+      <button class="nav-arrow" (click)="next()" [disabled]="state().currentQuestionIndex === state().questions.length - 1">
+        <lucide-icon [img]="ChevronRight" [size]="20"></lucide-icon>
+      </button>
+    </div>
+
+    <div class="right-actions">
+      <button class="primary-btn flex items-center gap-2" (click)="next()" 
+              [disabled]="state().currentQuestionIndex === state().questions.length - 1">
+        NEXT <lucide-icon [img]="ArrowRight" [size]="16"></lucide-icon>
+      </button>
+    </div>
+  </div>
+
+</div>
