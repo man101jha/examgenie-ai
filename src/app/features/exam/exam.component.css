@@ -95,3 +95,40 @@
   display: flex;
   flex-direction: column;
 }
+
+/* === Mobile Responsiveness === */
+@media (max-width: 768px) {
+  .exam-layout {
+    height: auto;
+    min-height: 100vh;
+    overflow-y: auto;
+  }
+  
+  .main-body {
+    flex-direction: column !important;
+    height: auto;
+    overflow: visible;
+  }
+
+  .question-section {
+    min-height: 50vh;
+    overflow: visible;
+  }
+  
+  .sidebar {
+    width: 100%;
+    border-left: none;
+    border-top: 1px solid var(--border-color);
+    overflow: visible;
+    flex: none;
+  }
+  
+  .header-right {
+    padding-right: 16px;
+    padding-left: 16px;
+  }
+  
+  .user-name {
+    display: none; /* Hide name on space-constrained nav bars */
+  }
+}

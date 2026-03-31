@@ -451,3 +451,45 @@
   transition: all 0.2s;
 }
 .btn-outline:hover { border-color: #6366f1; color: #6366f1; }
+
+/* === Mobile Responsiveness === */
+@media (max-width: 768px) {
+  .home-container {
+    flex-direction: column;
+    padding: 32px 20px;
+    gap: 40px;
+  }
+  
+  .left-panel, .right-panel, .upload-card, .generate-dialog {
+    max-width: 100%;
+    width: 100%;
+  }
+  
+  .hero-title {
+    font-size: 32px;
+  }
+  
+  .upload-card, .generate-dialog {
+    padding: 24px;
+  }
+  
+  .difficulty-grid, .count-grid {
+    flex-direction: column;
+    gap: 12px;
+  }
+  
+  .how-steps {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  
+  .how-step {
+    flex-direction: row;
+    text-align: left;
+  }
+  
+  .how-arrow {
+    display: none;
+  }
+}

@@ -137,3 +137,41 @@
 .submit-btn:hover {
   background: var(--success-hover);
 }
+
+/* === Mobile Responsiveness === */
+@media (max-width: 768px) {
+  .palette-layout {
+    height: auto;
+    border-top: 1px solid var(--border-color);
+  }
+
+  .palette-grid {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding: 12px 16px;
+    gap: 12px;
+    align-content: center;
+    /* Hide scrollbar for a cleaner look */
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .palette-grid::-webkit-scrollbar {
+    display: none;
+  }
+
+  .q-bubble {
+    flex-shrink: 0;
+    width: 36px;
+    height: 36px;
+    margin: 0;
+  }
+
+  .legend, .tabs, .copyright {
+    display: none !important;
+  }
+
+  .submit-box {
+    padding: 12px 16px;
+  }
+}

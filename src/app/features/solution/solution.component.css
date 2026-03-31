@@ -277,3 +277,50 @@
   animation: spin 1s linear infinite;
   display: inline-flex;
 }
+
+/* === Mobile Responsiveness === */
+@media (max-width: 768px) {
+  .header {
+    padding: 0 16px;
+  }
+  
+  .questions-list {
+    margin: 16px auto;
+    padding: 0 16px 80px;
+    gap: 12px;
+  }
+  
+  .card-header {
+    padding: 12px 14px;
+    align-items: flex-start;
+  }
+  
+  .q-meta {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  
+  .q-preview {
+    width: 100%;
+    margin-top: 4px;
+    font-size: 13px;
+  }
+  
+  .card-body {
+    padding: 16px 14px;
+  }
+  
+  .solution-option {
+    padding: 10px 12px;
+  }
+  
+  .opt-text {
+    font-size: 13px;
+  }
+  
+  .sb-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+}
