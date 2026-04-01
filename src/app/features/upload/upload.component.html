@@ -1,168 +1,156 @@
 <div class="home-container">
   
-  <!-- Branding (Global to allow mobile reordering) -->
-  <div class="brand" *ngIf="!showGenerateDialog">
-    <img src="logo.png" alt="ExamGenie Logo" class="brand-logo">
-    <div>
-      <div class="brand-name">ExamGenie</div>
-      <div class="brand-tagline">AI-Powered Exam Generator</div>
-    </div>
-  </div>
-
-  <!-- Loading Overlay -->
-  <div class="loading-overlay" *ngIf="isExtracting || isGenerating">
-    <div class="loading-card">
-      <div class="pulse-rings">
-        <span></span><span></span><span></span>
-      </div>
-      <div class="loading-title">ExamGenie is thinking...</div>
-      <div class="loading-step">{{ loadingStep }}</div>
-      <div class="loading-dots">
-        <span></span><span></span><span></span>
-      </div>
-    </div>
-  </div>
-
-  <!-- Left Panel: Features & Info -->
-  <div class="left-panel" *ngIf="!showGenerateDialog">
-    <h1 class="hero-title">Your Ultimate AI<br><span class="highlight">Exam Generator</span></h1>
-    <p class="hero-sub">Transform PDFs or competitive exam syllabi into smart, interactive tests with instant scoring and step-by-step AI explanations.</p>
-
-    <div class="features-list">
-      <div class="feature-item">
-        <div class="feat-icon">📄</div>
-        <div>
-          <div class="feat-title">PDF to Exam</div>
-          <div class="feat-desc">Upload any question paper or study notes and let AI extract or generate a test for you.</div>
-        </div>
-      </div>
-      <div class="feature-item">
-        <div class="feat-icon">🎯</div>
-        <div>
-          <div class="feat-title">Exam-Based Generator</div>
-          <div class="feat-desc">Select any competitive exam (JEE, NEET, SSC, etc.) and generate questions for specific topics.</div>
-        </div>
-      </div>
-      <div class="feature-item">
-        <div class="feat-icon">📊</div>
-        <div>
-          <div class="feat-title">Detailed Analytics</div>
-          <div class="feat-desc">Get a full scorecard and a deep-dive report with time-tracking per question.</div>
-        </div>
-      </div>
-      <div class="feature-item">
-        <div class="feat-icon">💡</div>
-        <div>
-          <div class="feat-title">AI-Powered Solutions</div>
-          <div class="feat-desc">After submitting, view color-coded answers and on-demand AI explanations</div>
-        </div>
+  <div class="main-wrapper" *ngIf="!showGenerateDialog">
+    <!-- Branding (Global to allow mobile reordering) -->
+    <div class="brand">
+      <img src="logo.png" alt="ExamGenie Logo" class="brand-logo">
+      <div>
+        <div class="brand-name">ExamGenie</div>
+        <div class="brand-tagline">AI-Powered Exam Generator</div>
       </div>
     </div>
 
-    <!-- About / Developer Section -->
-    <div class="about-section">
-      <div class="about-divider"></div>
-      <div class="about-content">
-        <div class="about-text">
-          <div class="about-label">Built by</div>
-          <div class="about-name">Mangesh Jha</div>
-          <a href="mailto:mangesh105jha@gmail.com" class="about-email">mangesh105jha&#64;gmail.com</a>
+    <!-- Left Panel: Features & Info -->
+    <div class="left-panel">
+      <h1 class="hero-title">Your Ultimate AI<br><span class="highlight">Exam Generator</span></h1>
+      <p class="hero-sub">Transform PDFs or competitive exam syllabi into smart, interactive tests with instant scoring and step-by-step AI explanations.</p>
+
+      <div class="features-list">
+        <div class="feature-item">
+          <div class="feat-icon">📄</div>
+          <div>
+            <div class="feat-title">PDF to Exam</div>
+            <div class="feat-desc">Upload any question paper or study notes and let AI extract or generate a test for you.</div>
+          </div>
         </div>
-        <div class="about-badge">
-          ExamGenie uses Google Gemini AI to intelligently parse documents
-          and craft personalized exams — making self-assessment smarter and effortless.
+        <div class="feature-item">
+          <div class="feat-icon">🎯</div>
+          <div>
+            <div class="feat-title">Exam-Based Generator</div>
+            <div class="feat-desc">Select any competitive exam (JEE, NEET, SSC, etc.) and generate questions for specific topics.</div>
+          </div>
         </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Right Panel: Upload Card -->
-  <div class="right-panel" *ngIf="!showGenerateDialog">
-    <div class="upload-card">
-      <div class="tab-group">
-        <button class="tab-btn" [class.active]="activeTab === 'pdf'" (click)="setTab('pdf')">
-          <lucide-icon [img]="FileText" [size]="16"></lucide-icon>
-          Upload PDF
-        </button>
-        <button class="tab-btn" [class.active]="activeTab === 'syllabus'" (click)="setTab('syllabus')">
-          <lucide-icon [img]="BookOpen" [size]="16"></lucide-icon>
-          Select Exam
-        </button>
-      </div>
-
-      <!-- Tab Content: PDF -->
-      <div class="tab-content" *ngIf="activeTab === 'pdf'">
-        <h2 class="card-title">Start Your Exam</h2>
-        <p class="card-sub">Upload a PDF to get started</p>
-
-        <div class="upload-area flex-col items-center justify-center"
-             [class.has-file]="selectedFile"
-             (click)="fileInput.click()">
-          <input type="file" #fileInput hidden (change)="onFileSelected($event)" accept="application/pdf">
-          <lucide-icon [img]="selectedFile ? FileText : UploadCloud" [size]="44" class="upload-icon"></lucide-icon>
-          <span class="upload-text" *ngIf="!selectedFile">Click to browse or drag &amp; drop PDF</span>
-          <span class="file-name" *ngIf="selectedFile">{{ selectedFile.name }}</span>
-          <span class="file-success flex items-center gap-1" *ngIf="selectedFile">
-            <lucide-icon [img]="CheckCircle2" [size]="14"></lucide-icon>
-            Ready to process
-          </span>
+        <div class="feature-item">
+          <div class="feat-icon">📊</div>
+          <div>
+            <div class="feat-title">Detailed Analytics</div>
+            <div class="feat-desc">Get a full scorecard and a deep-dive report with time-tracking per question.</div>
+          </div>
         </div>
-
-        <!-- Error Banner -->
-        <div class="error-banner" *ngIf="errorMessage">
-          <lucide-icon [img]="FileText" [size]="16"></lucide-icon>
-          <span>{{ errorMessage }}</span>
-        </div>
-
-        <button class="btn-generate w-full"
-                [disabled]="!selectedFile || isExtracting"
-                (click)="startExtraction()">
-          <lucide-icon [img]="Sparkles" [size]="18"></lucide-icon>
-          Generate Exam with AI
-        </button>
-
-        <div class="how-it-works">
-          <div class="how-title">How it works</div>
-          <div class="how-steps">
-            <div class="how-step"><span class="step-num">1</span> Upload PDF</div>
-            <div class="how-arrow">→</div>
-            <div class="how-step"><span class="step-num">2</span> AI Processes</div>
-            <div class="how-arrow">→</div>
-            <div class="how-step"><span class="step-num">3</span> Take Exam</div>
-            <div class="how-arrow">→</div>
-            <div class="how-step"><span class="step-num">4</span> View Results</div>
+        <div class="feature-item">
+          <div class="feat-icon">💡</div>
+          <div>
+            <div class="feat-title">AI-Powered Solutions</div>
+            <div class="feat-desc">After submitting, view color-coded answers and on-demand AI explanations</div>
           </div>
         </div>
       </div>
 
-      <!-- Tab Content: Syllabus -->
-      <div class="tab-content" *ngIf="activeTab === 'syllabus'">
-        <h2 class="card-title">Question Generator</h2>
-        <p class="card-sub">Create an exam from specific competitive topics</p>
+      <!-- About / Developer Section -->
+      <div class="about-section">
+        <div class="about-divider"></div>
+        <div class="about-content">
+          <div class="about-text">
+            <div class="about-label">Built by</div>
+            <div class="about-name">Mangesh Jha</div>
+            <a href="mailto:mangesh105jha@gmail.com" class="about-email">mangesh105jha&#64;gmail.com</a>
+          </div>
+          <div class="about-badge">
+            ExamGenie uses Google Gemini AI to intelligently parse documents
+            and craft personalized exams — making self-assessment smarter and effortless.
+          </div>
+        </div>
+      </div>
+    </div>
 
-        <!-- Generate from Syllabus Card (Inside Tab) -->
-        <div class="syllabus-card tab-version" (click)="navigateToGenerate()">
-          <div class="syllabus-card-icon">🎯</div>
-          <div class="syllabus-card-body">
-            <div class="syllabus-card-title">Generate Exam</div>
-            <div class="syllabus-card-desc">Pick any competitive exam, choose specific topics and let AI craft a full MCQ paper — no PDF needed.</div>
-            <div class="syllabus-tags">
-              <span class="stag">RRB</span>
-              <span class="stag">SSC</span>
-              <span class="stag">UPSC</span>
-              <span class="stag">NEET</span>
-              <span class="stag">JEE</span>
-              <span class="stag">CAT</span>
-              <span class="stag">IBPS</span>
-              <span class="stag">CUET</span>
+    <!-- Right Panel: Upload Card -->
+    <div class="right-panel">
+      <div class="upload-card">
+        <div class="tab-group">
+          <button class="tab-btn" [class.active]="activeTab === 'pdf'" (click)="setTab('pdf')">
+            <lucide-icon [img]="FileText" [size]="16"></lucide-icon>
+            Upload PDF
+          </button>
+          <button class="tab-btn" [class.active]="activeTab === 'syllabus'" (click)="setTab('syllabus')">
+            <lucide-icon [img]="BookOpen" [size]="16"></lucide-icon>
+            Select Exam
+          </button>
+        </div>
+
+        <!-- Tab Content: PDF -->
+        <div class="tab-content" *ngIf="activeTab === 'pdf'">
+          <h2 class="card-title">Start Your Exam</h2>
+          <p class="card-sub">Upload a PDF to get started</p>
+
+          <div class="upload-area flex-col items-center justify-center"
+               [class.has-file]="selectedFile"
+               (click)="fileInput.click()">
+            <input type="file" #fileInput hidden (change)="onFileSelected($event)" accept="application/pdf">
+            <lucide-icon [img]="selectedFile ? FileText : UploadCloud" [size]="44" class="upload-icon"></lucide-icon>
+            <span class="upload-text" *ngIf="!selectedFile">Click to browse or drag &amp; drop PDF</span>
+            <span class="file-name" *ngIf="selectedFile">{{ selectedFile.name }}</span>
+            <span class="file-success flex items-center gap-1" *ngIf="selectedFile">
+              <lucide-icon [img]="CheckCircle2" [size]="14"></lucide-icon>
+              Ready to process
+            </span>
+          </div>
+
+          <!-- Error Banner -->
+          <div class="error-banner" *ngIf="errorMessage">
+            <lucide-icon [img]="FileText" [size]="16"></lucide-icon>
+            <span>{{ errorMessage }}</span>
+          </div>
+
+          <button class="btn-generate w-full"
+                  [disabled]="!selectedFile || isExtracting"
+                  (click)="startExtraction()">
+            <lucide-icon [img]="Sparkles" [size]="18"></lucide-icon>
+            Generate Exam with AI
+          </button>
+
+          <div class="how-it-works">
+            <div class="how-title">How it works</div>
+            <div class="how-steps">
+              <div class="how-step"><span class="step-num">1</span> Upload PDF</div>
+              <div class="how-arrow">→</div>
+              <div class="how-step"><span class="step-num">2</span> AI Processes</div>
+              <div class="how-arrow">→</div>
+              <div class="how-step"><span class="step-num">3</span> Take Exam</div>
+              <div class="how-arrow">→</div>
+              <div class="how-step"><span class="step-num">4</span> View Results</div>
             </div>
           </div>
-          <div class="syllabus-card-arrow">→</div>
         </div>
-      </div>
 
+        <!-- Tab Content: Syllabus -->
+        <div class="tab-content" *ngIf="activeTab === 'syllabus'">
+          <h2 class="card-title">Question Generator</h2>
+          <p class="card-sub">Create an exam from specific competitive topics</p>
+
+          <!-- Generate from Syllabus Card (Inside Tab) -->
+          <div class="syllabus-card tab-version" (click)="navigateToGenerate()">
+            <div class="syllabus-card-icon">🎯</div>
+            <div class="syllabus-card-body">
+              <div class="syllabus-card-title">Generate Exam</div>
+              <div class="syllabus-card-desc">Pick any competitive exam, choose specific topics and let AI craft a full MCQ paper — no PDF needed.</div>
+              <div class="syllabus-tags">
+                <span class="stag">RRB</span>
+                <span class="stag">SSC</span>
+                <span class="stag">UPSC</span>
+                <span class="stag">NEET</span>
+                <span class="stag">JEE</span>
+                <span class="stag">CAT</span>
+                <span class="stag">IBPS</span>
+                <span class="stag">CUET</span>
+              </div>
+            </div>
+            <div class="syllabus-card-arrow">→</div>
+          </div>
+        </div>
+
+      </div>
     </div>
-  </div>
+  </div><!-- End main-wrapper -->
 
   <!-- Generate Dialog (No questions in PDF) -->
   <div class="generate-dialog" *ngIf="showGenerateDialog && !isGenerating">
