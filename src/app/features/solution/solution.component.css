@@ -253,11 +253,18 @@
   margin-bottom: 10px;
 }
 
-.explanation-text {
+.explanation-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.explanation-step {
   font-size: 14px;
   color: var(--text-muted);
-  line-height: 1.7;
-  white-space: pre-wrap;
+  line-height: 1.6;
+  margin: 0;
+  padding: 0;
 }
 
 .explanation-loading {

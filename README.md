@@ -17,8 +17,10 @@ ExamGenie is an AI-powered educational application built with **Angular 18**. It
 
 ### ✨ Key Features
 - **Smart PDF Extraction:** Upload a PDF and ExamGenie parses its contents.
+- **Syllabus-Based Question Generator:** Pick from popular competitive exams (JEE, NEET, UPSC, SSC, RRB, etc.), select specific subjects and topics, and let AI generate a perfectly tailored practice test.
 - **Dynamic Question Generation:** If a document doesn't have explicit questions, ExamGenie generates a custom test based on the text. You can select the **Difficulty** (Easy, Medium, Hard) and the **Number of Questions** (10-25).
-- **Interactive Exam Environment:** A fully responsive test interface featuring a question palette, "Mark for Review" status tracking, and intuitive navigation.
+- **Interactive Exam Environment:** A fully responsive multi-step test interface featuring fixed navigation bars, a question palette, and "Mark for Review" status tracking.
+- **Detailed Performance Analytics:** Split result views including a quick circular scorecard and a dedicated high-fidelity report page with time-tracking per question and correctness plotting.
 - **AI Explanations & Solutions:** After submitting, instantly view a color-coded scorecard. ExamGenie generates step-by-step explanations on-demand for every single question.
 - **Serverless Automation:** Built securely with dynamic environment variables mapped to Vercel.
 

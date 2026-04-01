@@ -28,4 +28,8 @@ export interface ExamState {
   incorrectAnswers: number;
   skippedAnswers: number;
   totalMarksTaken: number;
+  
+  // Telemetry
+  timeSpentPerQuestion: { [questionId: string]: number }; // In seconds
+  totalTimeSpent: number; // In seconds
 }

@@ -33,6 +33,19 @@ export class PdfExtractorService {
     );
   }
 
+  generateFromSyllabus(
+    examName: string,
+    selectedTopics: { subject: string; topics: string[] }[],
+    difficulty: 'easy' | 'medium' | 'hard',
+    count: number,
+    customPrompt?: string
+  ): Observable<{ questions: Question[], title: string }> {
+    const title = `${examName} — ${difficulty.charAt(0).toUpperCase() + difficulty.slice(1)} Level`;
+    return from(this.createQuestionsFromSyllabus(examName, selectedTopics, difficulty, count, customPrompt)).pipe(
+      map(jsonStr => ({ questions: this.parseJsonToQuestions(jsonStr), title }))
+    );
+  }
+
   generateExplanations(questions: Question[]): Observable<{ [questionId: string]: string }> {
     return from(this.fetchExplanations(questions));
   }
@@ -100,6 +113,64 @@ export class PdfExtractorService {
     `;
 
     const result = await model.generateContent([prompt, base64Data]);
+    const response = await result.response;
+    let text = response.text();
+    text = text.replace(/```json/gi, '').replace(/```/g, '').trim();
+    return text;
+  }
+
+  private async createQuestionsFromSyllabus(
+    examName: string,
+    selectedTopics: { subject: string; topics: string[] }[],
+    difficulty: 'easy' | 'medium' | 'hard',
+    count: number,
+    customPrompt?: string
+  ): Promise<string> {
+    const model = this.genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
+
+    const difficultyDesc = {
+      easy:   'basic conceptual questions with clear, straightforward answers suitable for beginners',
+      medium: 'moderately difficult questions that test understanding of core concepts at standard exam level',
+      hard:   'challenging analytical questions requiring deep reasoning, multi-step logic, and advanced problem solving'
+    }[difficulty];
+
+    const topicsBlock = selectedTopics.map(s =>
+      `Subject: ${s.subject}\nTopics: ${s.topics.join(', ')}`
+    ).join('\n\n');
+
+    const extra = customPrompt ? `\n\nAdditional Instructions from user: ${customPrompt}` : '';
+
+    const prompt = `You are an expert question paper setter for the ${examName} examination.
+
+Generate exactly ${count} Multiple Choice Questions (MCQs) at ${difficulty.toUpperCase()} difficulty level (${difficultyDesc}).
+
+Exam: ${examName}
+Topics to cover:
+${topicsBlock}
+${extra}
+
+STRICT RULES:
+1. ALL questions MUST be MCQ only — exactly 4 options (A, B, C, D).
+2. Questions must be strictly from the provided topics and relevant to the ${examName} exam pattern.
+3. Distribute questions proportionally across the provided subjects/topics.
+4. Difficulty must be consistently ${difficulty.toUpperCase()} throughout.
+5. Each question must have one unambiguously correct answer.
+6. Options should be plausible and not trivially obvious.
+7. Do NOT repeat questions or make them too similar to each other.
+
+Output ONLY a raw JSON array in this exact format with no markdown or extra text:
+[
+  {
+    "question_number": 1,
+    "question": "Full question text here?",
+    "options": { "A": "Option A text", "B": "Option B text", "C": "Option C text", "D": "Option D text" },
+    "answer": "B"
+  }
+]
+
+Generate all ${count} questions now.`;
+
+    const result = await model.generateContent(prompt);
     const response = await result.response;
     let text = response.text();
     text = text.replace(/```json/gi, '').replace(/```/g, '').trim();

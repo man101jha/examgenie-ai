@@ -468,6 +468,128 @@
 }
 .btn-outline:hover { border-color: #6366f1; color: #6366f1; }
 
+/* === Tabs === */
+.tab-group {
+  display: flex;
+  background: #f3f4f6;
+  border-radius: 12px;
+  padding: 4px;
+  margin-bottom: 24px;
+}
+
+.tab-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px;
+  border: none;
+  background: transparent;
+  color: #6b7280;
+  font-size: 14px;
+  font-weight: 600;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.tab-btn:hover {
+  color: #4b5563;
+}
+
+.tab-btn.active {
+  background: white;
+  color: #6366f1;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.tab-content {
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* === Syllabus Card === */
+.syllabus-card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  width: 100%; /* Make it responsive to its container */
+  background: linear-gradient(135deg, #f8faff, #eef2ff);
+  border: 1px solid #c7d2fe;
+  border-radius: 18px;
+  padding: 24px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.syllabus-card.tab-version {
+  margin-top: 10px;
+}
+
+.syllabus-card:hover {
+  border-color: #818cf8;
+  transform: translateY(-2px);
+  box-shadow: 0 12px 24px rgba(99,102,241,0.15);
+}
+
+.syllabus-card-icon {
+  font-size: 32px;
+  flex-shrink: 0;
+}
+
+.syllabus-card-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.syllabus-card-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: #1e1b4b;
+  margin-bottom: 6px;
+}
+
+.syllabus-card-desc {
+  font-size: 13px;
+  color: #4b5563;
+  line-height: 1.5;
+  margin-bottom: 12px;
+}
+
+.syllabus-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.stag {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 6px;
+  background: white;
+  color: #6366f1;
+  border: 1px solid #e0e7ff;
+  letter-spacing: 0.03em;
+}
+
+.syllabus-card-arrow {
+  font-size: 20px;
+  color: #9ca3af;
+  flex-shrink: 0;
+  transition: transform 0.2s, color 0.2s;
+}
+
+.syllabus-card:hover .syllabus-card-arrow {
+  color: #6366f1;
+  transform: translateX(4px);
+}
+
 /* === Mobile Responsiveness === */
 @media (max-width: 768px) {
   .home-container {
@@ -507,5 +629,10 @@
   
   .how-arrow {
     display: none;
+  }
+
+  .mode-divider,
+  .syllabus-card {
+    width: 100%;
   }
 }

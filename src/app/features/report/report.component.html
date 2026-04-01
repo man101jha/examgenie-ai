@@ -1,0 +1,65 @@
+<div class="report-layout">
+  <div class="header flex items-center justify-between">
+    <div class="flex items-center h-full">
+      <button class="back-btn flex items-center justify-center border-r border-white/10" (click)="goBack()">
+        <lucide-icon [img]="ArrowLeft" [size]="20"></lucide-icon>
+      </button>
+      <div class="exam-title text-xl font-semibold pl-4">Score &amp; Time Analysis</div>
+    </div>
+    
+    <div class="header-right pr-6">
+      <button class="view-solution-btn">
+        VIEW SOLUTION &rarr;
+      </button>
+    </div>
+  </div>
+
+  <div class="content p-6 md:p-10 max-w-[1400px] mx-auto">
+    <!-- Top Filter & Topper Comparison row -->
+    <div class="flex justify-between items-center mb-8 flex-wrap gap-4">
+      <button class="filter-btn">
+        Filter By <lucide-icon [img]="ArrowLeft" [size]="14" class="rotate-[-90deg] inline-block ml-2"></lucide-icon>
+      </button>
+
+      <button class="compare-btn">COMPARE WITH TOPPER</button>
+    </div>
+
+    <!-- Quick Stats Line -->
+    <div class="text-sm font-medium mb-10 flex gap-4 text-white items-center flex-wrap">
+      <span>Questions <strong class="text-base">{{ stats.totalQuestions }}</strong></span> &bull;
+      <span>Correct <strong class="text-base">{{ stats.correct }}</strong></span> &bull;
+      <span>Incorrect <strong class="text-base">{{ stats.incorrect }}</strong></span> &bull;
+      <span>Skipped <strong class="text-base">{{ stats.skipped }}</strong></span> &bull;
+      <span>Score <strong class="text-base">{{ stats.score }}</strong></span> &bull;
+      <span>Time Taken <strong class="text-base">{{ formattedTotalTime }} min</strong></span>
+    </div>
+
+    <!-- Timeline Plotting -->
+    <div class="result-card w-full mt-6">
+      <div class="flex justify-between items-center mb-8 flex-wrap gap-4">
+        <h3 class="text-xl font-semibold">Correct Answer &amp; Time Taken Plotting</h3>
+        <div class="flex gap-6 items-center text-sm flex-wrap">
+          <div class="flex items-center gap-2"><span class="w-4 h-4 rounded bg-[#85c189]"></span> Time For Correct Answer</div>
+          <div class="flex items-center gap-2"><span class="w-4 h-4 rounded bg-[#c89b9a]"></span> Time For Incorrect Answer</div>
+          <div class="flex items-center gap-2"><span class="w-4 h-4 border border-slate-500 rounded bg-white"></span> Time For Skipped Answer</div>
+        </div>
+      </div>
+
+      <apx-chart
+        class="detailed-plot"
+        [series]="timelineOptions.series"
+        [chart]="timelineOptions.chart"
+        [plotOptions]="timelineOptions.plotOptions"
+        [xaxis]="timelineOptions.xaxis"
+        [yaxis]="timelineOptions.yaxis"
+        [colors]="timelineOptions.colors!"
+        [dataLabels]="timelineOptions.dataLabels"
+        [legend]="timelineOptions.legend"
+        [grid]="timelineOptions.grid!"
+        [stroke]="timelineOptions.stroke"
+        [fill]="timelineOptions.fill"
+        [tooltip]="timelineOptions.tooltip"
+      ></apx-chart>
+    </div>
+  </div>
+</div>

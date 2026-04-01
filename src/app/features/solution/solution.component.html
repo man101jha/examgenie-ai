@@ -83,7 +83,11 @@
           <!-- Loaded -->
           <div *ngIf="q.explanation && !isLoadingExplanation(q)">
             <div class="explanation-title">💡 AI Explanation</div>
-            <div class="explanation-text">{{ q.explanation }}</div>
+            <div class="explanation-steps">
+              <p *ngFor="let step of getExplanationSteps(q)" class="explanation-step">
+                {{ step }}
+              </p>
+            </div>
           </div>
         </div>
       </div>

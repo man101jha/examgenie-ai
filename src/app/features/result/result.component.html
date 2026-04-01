@@ -1,114 +1,210 @@
-<div class="result-layout h-full flex flex-col">
-  <header class="header flex items-center justify-between">
-    <div class="flex items-center">
-      <button class="back-btn flex items-center justify-center" (click)="goBack()">
+<div class="result-layout">
+  <div class="header flex items-center justify-between">
+    <div class="flex items-center h-full">
+      <button class="back-btn flex items-center justify-center border-r border-white/10" (click)="goBack()">
         <lucide-icon [img]="ArrowLeft" [size]="20"></lucide-icon>
       </button>
-      <span class="exam-title text-white">{{ state().examTitle }}</span>
+      <div class="exam-title text-xl font-semibold pl-4">{{ state().examTitle }} Result</div>
     </div>
     
-    <div class="header-right">
+    <div class="header-right pr-6">
       <button class="dropdown-btn flex items-center gap-2">
-        Latest Attempt... <lucide-icon [img]="ChevronDown" [size]="14"></lucide-icon>
+        {{ state().examTitle }} <lucide-icon [img]="ChevronDown" [size]="14"></lucide-icon>
       </button>
     </div>
-  </header>
+  </div>
 
-  <div class="content flex justify-center content-center h-full items-center p-6" *ngIf="state().isSubmitted">
-    <div class="cards-container flex gap-6 w-full max-w-5xl">
-      
-      <!-- Left Card -->
-      <div class="result-card left-card flex-col">
-        <div class="score-header text-center">Your Score</div>
-        
-        <div class="score-display flex-col items-center">
-          <div class="score-main">{{ stats.score }}</div>
-          <div class="score-sub">out of {{ stats.totalMarks }}</div>
+  <div class="content p-6 md:p-10 max-w-[1400px] mx-auto">
+    <!-- TOP SECTION: Restored Original UI -->
+    <div class="cards-container flex gap-6 mt-4">
+      <!-- Left Box -->
+      <div class="result-card left-card flex flex-col justify-between">
+        <div class="text-center">
+          <h2 class="score-header font-semibold">Your Score</h2>
+          <div class="score-display">
+            <div class="score-main">{{ stats.score }}</div>
+            <div class="score-sub">out of {{ stats.totalQuestions * stats.questionMarks }}</div>
+          </div>
         </div>
 
-        <div class="stats-list flex-col">
-          <div class="stat-item flex justify-between">
+        <div class="stats-list flex flex-col mt-6">
+          <div class="stat-item flex justify-between items-center mb-4">
             <span class="label">Percentile</span>
             <span class="val">N/A</span>
           </div>
-          <div class="stat-item flex justify-between">
+          <div class="stat-item flex justify-between items-center mb-4">
             <span class="label">Accuracy</span>
             <span class="val">{{ stats.accuracy }}%</span>
           </div>
-          <div class="stat-item flex justify-between">
+          <div class="stat-item flex justify-between items-center">
             <span class="label">Percentage</span>
             <span class="val">{{ stats.percentage }}%</span>
           </div>
         </div>
 
-        <button class="view-solution-btn w-full" (click)="viewSolution()">VIEW SOLUTION</button>
+        <button class="view-solution-btn w-full mt-6" (click)="viewSolution()">
+          VIEW SOLUTION
+        </button>
       </div>
 
-      <!-- Right Card -->
-      <div class="result-card right-card flex-col flex-1">
-        <div class="score-header">Total Marks {{ stats.totalMarks }}</div>
+      <!-- Right Box -->
+      <div class="result-card right-card flex-1 flex flex-col justify-between">
+        <div class="font-medium">Total Marks <strong class="text-white text-lg ml-1">{{ stats.totalQuestions * stats.questionMarks }}</strong></div>
 
-        <div class="rings-container flex justify-between items-center">
-          <!-- Correct Ring -->
-          <div class="ring-pack flex-col items-center">
-            <div class="ring-wrap">
-              <svg class="ring" viewBox="0 0 70 70">
-                <circle class="ring-bg" cx="35" cy="35" r="30" />
-                <circle class="ring-fill correct-fill" cx="35" cy="35" r="30" 
-                        [attr.stroke-dasharray]="getRingDashArray(stats.correctMarks, stats.totalMarks)" />
+        <div class="rings-container flex justify-between items-center w-full mt-8 mb-10">
+          
+          <div class="ring-pack flex flex-col items-center">
+            <div class="ring-wrap mb-4">
+              <svg class="ring" viewBox="0 0 64 64">
+                <circle class="ring-bg" cx="32" cy="32" r="30"></circle>
+                <circle class="ring-fill correct-fill" cx="32" cy="32" r="30"
+                        [attr.stroke-dasharray]="getRingDashArray(stats.correctMarks, stats.totalMarks)"></circle>
               </svg>
-              <span class="ring-value">{{ stats.correctMarks }}</span>
+              <div class="ring-value text-white">{{ stats.correctMarks }}</div>
             </div>
-            <span class="ring-label">Correct</span>
+            <span class="ring-label text-slate-300">Correct</span>
           </div>
 
-          <!-- Incorrect Ring -->
-          <div class="ring-pack flex-col items-center">
-            <div class="ring-wrap">
-              <svg class="ring" viewBox="0 0 70 70">
-                <circle class="ring-bg" cx="35" cy="35" r="30" />
-                <circle class="ring-fill incorrect-fill" cx="35" cy="35" r="30" 
-                        [attr.stroke-dasharray]="getRingDashArray(stats.incorrectMarks, stats.totalMarks)" />
+          <div class="ring-pack flex flex-col items-center">
+            <div class="ring-wrap mb-4">
+              <svg class="ring" viewBox="0 0 64 64">
+                <circle class="ring-bg" cx="32" cy="32" r="30"></circle>
+                <circle class="ring-fill incorrect-fill" cx="32" cy="32" r="30"
+                        [attr.stroke-dasharray]="getRingDashArray(stats.negativeMarks, stats.totalMarks)"></circle>
               </svg>
-              <span class="ring-value -danger">-{{ stats.incorrectMarks }}</span>
+              <div class="ring-value text-white">-{{ Math.abs(stats.negativeMarks) }}</div>
             </div>
-            <span class="ring-label">Incorrect</span>
+            <span class="ring-label text-slate-300">Incorrect</span>
           </div>
 
-          <!-- Negative Ring -->
-          <div class="ring-pack flex-col items-center">
-            <div class="ring-wrap">
-              <svg class="ring" viewBox="0 0 70 70">
-                <circle class="ring-bg" cx="35" cy="35" r="30" />
-                <circle class="ring-fill negative-fill" cx="35" cy="35" r="30" 
-                        [attr.stroke-dasharray]="getRingDashArray(stats.negativeMarks, stats.totalMarks)" />
+          <div class="ring-pack flex flex-col items-center">
+            <div class="ring-wrap mb-4">
+              <svg class="ring" viewBox="0 0 64 64">
+                <circle class="ring-bg" cx="32" cy="32" r="30"></circle>
+                <circle class="ring-fill negative-fill" cx="32" cy="32" r="30"
+                        [attr.stroke-dasharray]="getRingDashArray(stats.incorrectMarks, stats.totalMarks)"></circle>
               </svg>
-              <span class="ring-value -danger">-{{ stats.negativeMarks }}</span>
+              <div class="ring-value text-white">-{{ stats.incorrectMarks }}</div>
             </div>
-            <span class="ring-label">Negative Marking</span>
+            <span class="ring-label text-slate-300">Negative Marking</span>
           </div>
 
-          <!-- Skipped Ring -->
-          <div class="ring-pack flex-col items-center">
-            <div class="ring-wrap">
-              <svg class="ring" viewBox="0 0 70 70">
-                <circle class="ring-bg" cx="35" cy="35" r="30" />
-                <circle class="ring-fill skipped-fill" cx="35" cy="35" r="30" stroke-dasharray="0 1000" />
+          <div class="ring-pack flex flex-col items-center">
+            <div class="ring-wrap mb-4">
+              <svg class="ring" viewBox="0 0 64 64">
+                <circle class="ring-bg" cx="32" cy="32" r="30"></circle>
+                <circle class="ring-fill" stroke="white" cx="32" cy="32" r="30"
+                        [attr.stroke-dasharray]="getRingDashArray(stats.skipped * stats.questionMarks, stats.totalMarks)"></circle>
               </svg>
-              <span class="ring-value">0</span>
+              <div class="ring-value text-white">-{{ stats.skipped * stats.questionMarks }}</div>
             </div>
-            <span class="ring-label">Skipped</span>
+            <span class="ring-label text-slate-300">Skipped</span>
+          </div>
+
+        </div>
+
+        <p class="summary-text">
+          You have scored <strong>{{ stats.correctMarks }} marks</strong> for correct answers, 
+          missed <strong>{{ stats.incorrectMarks }} marks</strong> on incorrect answers, 
+          lost <strong>{{ Math.abs(stats.negativeMarks) }} marks</strong> due to negative marking 
+          and <strong>{{ stats.skipped * stats.questionMarks }} marks</strong> by skipping questions.
+        </p>
+      </div>
+    </div>
+
+
+    <!-- BOTTOM SECTION: How did you perform? -->
+    <div class="flex justify-between items-center mt-12 mb-6">
+      <h2 class="text-3xl font-bold">How did you perform?</h2>
+      <button style="background-color: #f8fafc; color: #0f172a; padding: 6px 16px; border-radius: 9999px; font-weight: 700; font-size: 13px; display: flex; align-items: center; gap: 4px; transition: 0.2s;" (click)="navigateToReport()">
+        View Report <lucide-icon [img]="ArrowRight" [size]="14"></lucide-icon>
+      </button>
+    </div>
+
+    <div class="dashboard-grid">
+      <!-- Time Analysis -->
+      <div class="result-card pie-card flex flex-col items-center">
+        <h3 class="text-xl font-semibold mb-6">Time Analysis</h3>
+        
+        <div class="chart-wrapper">
+          <apx-chart 
+            [series]="timePieOptions.series"
+            [chart]="timePieOptions.chart"
+            [labels]="timePieOptions.labels!"
+            [colors]="timePieOptions.colors!"
+            [dataLabels]="timePieOptions.dataLabels"
+            [legend]="timePieOptions.legend"
+            [stroke]="timePieOptions.stroke"
+            [fill]="timePieOptions.fill"
+            [tooltip]="timePieOptions.tooltip"
+          ></apx-chart>
+        </div>
+
+        <div class="text-3xl font-bold mt-2">{{ formattedTotalTime }}</div>
+        <div class="text-sm text-slate-400 mb-8 tracking-wide">Total Time Spent</div>
+
+        <div class="w-full flex justify-between text-[15px] mb-4">
+          <span class="text-slate-300">On Correct Answers</span>
+          <span class="text-[#85c189] font-medium">{{ timePercentages.correct }}%</span>
+        </div>
+        <div class="w-full flex justify-between text-[15px] mb-4">
+          <span class="text-slate-300">On Incorrect Answers</span>
+          <span class="text-[#c89b9a] font-medium">{{ timePercentages.incorrect }}%</span>
+        </div>
+        <div class="w-full flex justify-between text-[15px] mb-2">
+          <span class="text-slate-300">On Skipped</span>
+          <span class="text-white font-medium">{{ timePercentages.skipped }}%</span>
+        </div>
+      </div>
+
+      <!-- Score Analysis Horizontal Bar -->
+      <div class="result-card score-card">
+        <div class="flex justify-between items-center mb-8">
+          <h3 class="text-2xl font-semibold">Score Analysis</h3>
+          <span class="text-slate-300">Total Questions <strong class="text-white text-xl ml-2">{{ stats.totalQuestions }}</strong></span>
+        </div>
+        
+        <div class="flex flex-wrap items-center mb-6 text-[14px]">
+          <span style="font-weight: 500; font-size: 16px; margin-right: 24px; color: #cbd5e1;">Attempts</span>
+          
+          <div style="display: flex; align-items: center; margin-right: 24px;">
+            <span style="width: 12px; height: 12px; border-radius: 2px; background-color: #85c189; margin-right: 8px;"></span> 
+            Correct <strong style="margin-left: 6px; color: white; font-weight: 600;">{{ stats.correct }}</strong>
+          </div>
+          
+          <div style="display: flex; align-items: center; margin-right: 24px;">
+            <span style="width: 12px; height: 12px; border-radius: 2px; background-color: #c89b9a; margin-right: 8px;"></span> 
+            Incorrect <strong style="margin-left: 6px; color: white; font-weight: 600;">{{ stats.incorrect }}</strong>
+          </div>
+          
+          <div style="display: flex; align-items: center; margin-right: 24px;">
+            <span style="width: 12px; height: 12px; border-radius: 2px; background-color: white; border: 1px solid #64748b; margin-right: 8px;"></span> 
+            Skipped <strong style="margin-left: 6px; color: white; font-weight: 600;">{{ stats.skipped }}</strong>
           </div>
         </div>
 
-        <div class="summary-text mt-auto">
-          You have scored <strong class="text-white">{{ stats.correctMarks }} marks</strong> for correct answers, 
-          missed <strong class="text-white">{{ stats.incorrectMarks }} marks</strong> on incorrect answers, 
-          lost <strong class="text-white">{{ stats.negativeMarks }} marks</strong> due to negative marking and 
-          <strong class="text-white">0 marks</strong> by skipping questions.
-        </div>
-      </div>
+        <apx-chart
+          [series]="scoreBarOptions.series"
+          [chart]="scoreBarOptions.chart"
+          [plotOptions]="scoreBarOptions.plotOptions"
+          [xaxis]="scoreBarOptions.xaxis"
+          [yaxis]="scoreBarOptions.yaxis"
+          [colors]="scoreBarOptions.colors!"
+          [legend]="scoreBarOptions.legend"
+          [dataLabels]="scoreBarOptions.dataLabels"
+          [grid]="scoreBarOptions.grid!"
+          [stroke]="scoreBarOptions.stroke"
+          [fill]="scoreBarOptions.fill"
+          [tooltip]="scoreBarOptions.tooltip"
+        ></apx-chart>
 
+        <p class="summary-text mt-8 pt-6 border-t border-white/5">
+          You have scored <strong class="text-white mx-1">{{ stats.score }} marks</strong> for correct answers, 
+          missed <strong class="text-white mx-1">{{ stats.incorrect * stats.questionMarks }} marks</strong> on incorrect answers, 
+          lost <strong class="text-white mx-1">{{ Math.abs(stats.negativeMarks) }} marks</strong> due to negative marking 
+          and <strong class="text-white mx-1">{{ stats.skipped * stats.questionMarks }} marks</strong> by skipping questions.
+        </p>
+      </div>
     </div>
   </div>
 </div>

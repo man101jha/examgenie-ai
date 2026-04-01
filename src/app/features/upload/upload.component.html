@@ -38,7 +38,7 @@
       <div class="feature-item">
         <div class="feat-icon">🤖</div>
         <div>
-          <div class="feat-title">AI Extraction & Generation</div>
+          <div class="feat-title">AI Extraction &amp; Generation</div>
           <div class="feat-desc">Extracts existing questions or generates new ones at Easy, Medium or Hard level</div>
         </div>
       </div>
@@ -78,47 +78,88 @@
   <!-- Right Panel: Upload Card -->
   <div class="right-panel" *ngIf="!showGenerateDialog">
     <div class="upload-card">
-      <h2 class="card-title">Start Your Exam</h2>
-      <p class="card-sub">Upload a PDF to get started</p>
-
-      <div class="upload-area flex-col items-center justify-center"
-           [class.has-file]="selectedFile"
-           (click)="fileInput.click()">
-        <input type="file" #fileInput hidden (change)="onFileSelected($event)" accept="application/pdf">
-        <lucide-icon [img]="selectedFile ? FileText : UploadCloud" [size]="44" class="upload-icon"></lucide-icon>
-        <span class="upload-text" *ngIf="!selectedFile">Click to browse or drag &amp; drop PDF</span>
-        <span class="file-name" *ngIf="selectedFile">{{ selectedFile.name }}</span>
-        <span class="file-success flex items-center gap-1" *ngIf="selectedFile">
-          <lucide-icon [img]="CheckCircle2" [size]="14"></lucide-icon>
-          Ready to process
-        </span>
+      <div class="tab-group">
+        <button class="tab-btn" [class.active]="activeTab === 'pdf'" (click)="setTab('pdf')">
+          <lucide-icon [img]="FileText" [size]="16"></lucide-icon>
+          Upload PDF
+        </button>
+        <button class="tab-btn" [class.active]="activeTab === 'syllabus'" (click)="setTab('syllabus')">
+          <lucide-icon [img]="BookOpen" [size]="16"></lucide-icon>
+          Select Exam
+        </button>
       </div>
 
-      <!-- Error Banner -->
-      <div class="error-banner" *ngIf="errorMessage">
-        <lucide-icon [img]="FileText" [size]="16"></lucide-icon>
-        <span>{{ errorMessage }}</span>
-      </div>
+      <!-- Tab Content: PDF -->
+      <div class="tab-content" *ngIf="activeTab === 'pdf'">
+        <h2 class="card-title">Start Your Exam</h2>
+        <p class="card-sub">Upload a PDF to get started</p>
 
-      <button class="btn-generate w-full"
-              [disabled]="!selectedFile || isExtracting"
-              (click)="startExtraction()">
-        <lucide-icon [img]="Sparkles" [size]="18"></lucide-icon>
-        Generate Exam with AI
-      </button>
+        <div class="upload-area flex-col items-center justify-center"
+             [class.has-file]="selectedFile"
+             (click)="fileInput.click()">
+          <input type="file" #fileInput hidden (change)="onFileSelected($event)" accept="application/pdf">
+          <lucide-icon [img]="selectedFile ? FileText : UploadCloud" [size]="44" class="upload-icon"></lucide-icon>
+          <span class="upload-text" *ngIf="!selectedFile">Click to browse or drag &amp; drop PDF</span>
+          <span class="file-name" *ngIf="selectedFile">{{ selectedFile.name }}</span>
+          <span class="file-success flex items-center gap-1" *ngIf="selectedFile">
+            <lucide-icon [img]="CheckCircle2" [size]="14"></lucide-icon>
+            Ready to process
+          </span>
+        </div>
 
-      <div class="how-it-works">
-        <div class="how-title">How it works</div>
-        <div class="how-steps">
-          <div class="how-step"><span class="step-num">1</span> Upload PDF</div>
-          <div class="how-arrow">→</div>
-          <div class="how-step"><span class="step-num">2</span> AI Processes</div>
-          <div class="how-arrow">→</div>
-          <div class="how-step"><span class="step-num">3</span> Take Exam</div>
-          <div class="how-arrow">→</div>
-          <div class="how-step"><span class="step-num">4</span> View Results</div>
+        <!-- Error Banner -->
+        <div class="error-banner" *ngIf="errorMessage">
+          <lucide-icon [img]="FileText" [size]="16"></lucide-icon>
+          <span>{{ errorMessage }}</span>
+        </div>
+
+        <button class="btn-generate w-full"
+                [disabled]="!selectedFile || isExtracting"
+                (click)="startExtraction()">
+          <lucide-icon [img]="Sparkles" [size]="18"></lucide-icon>
+          Generate Exam with AI
+        </button>
+
+        <div class="how-it-works">
+          <div class="how-title">How it works</div>
+          <div class="how-steps">
+            <div class="how-step"><span class="step-num">1</span> Upload PDF</div>
+            <div class="how-arrow">→</div>
+            <div class="how-step"><span class="step-num">2</span> AI Processes</div>
+            <div class="how-arrow">→</div>
+            <div class="how-step"><span class="step-num">3</span> Take Exam</div>
+            <div class="how-arrow">→</div>
+            <div class="how-step"><span class="step-num">4</span> View Results</div>
+          </div>
         </div>
       </div>
+
+      <!-- Tab Content: Syllabus -->
+      <div class="tab-content" *ngIf="activeTab === 'syllabus'">
+        <h2 class="card-title">Question Generator</h2>
+        <p class="card-sub">Create an exam from specific competitive topics</p>
+
+        <!-- Generate from Syllabus Card (Inside Tab) -->
+        <div class="syllabus-card tab-version" (click)="navigateToGenerate()">
+          <div class="syllabus-card-icon">🎯</div>
+          <div class="syllabus-card-body">
+            <div class="syllabus-card-title">Generate Exam</div>
+            <div class="syllabus-card-desc">Pick any competitive exam, choose specific topics and let AI craft a full MCQ paper — no PDF needed.</div>
+            <div class="syllabus-tags">
+              <span class="stag">RRB</span>
+              <span class="stag">SSC</span>
+              <span class="stag">UPSC</span>
+              <span class="stag">NEET</span>
+              <span class="stag">JEE</span>
+              <span class="stag">CAT</span>
+              <span class="stag">IBPS</span>
+              <span class="stag">CUET</span>
+            </div>
+          </div>
+          <div class="syllabus-card-arrow">→</div>
+        </div>
+      </div>
+
     </div>
   </div>
 

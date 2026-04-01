@@ -1,0 +1,252 @@
+<div class="gen-page">
+
+  <!-- Loading Overlay -->
+  <div class="loading-overlay" *ngIf="isGenerating">
+    <div class="loading-card">
+      <div class="pulse-rings">
+        <span></span><span></span><span></span>
+      </div>
+      <div class="loading-title">ExamGenie is crafting your exam...</div>
+      <div class="loading-step">{{ loadingStep }}</div>
+      <div class="loading-dots">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Header -->
+  <div class="gen-header">
+    <button class="back-btn" (click)="goBack()">
+      <lucide-icon [img]="ArrowLeft" [size]="16"></lucide-icon>
+      Back
+    </button>
+    <div class="header-brand">
+      <img src="logo.png" alt="ExamGenie" class="header-logo">
+      <span class="header-title">ExamGenie</span>
+    </div>
+    <div class="header-badge">
+      <lucide-icon [img]="Zap" [size]="14"></lucide-icon>
+      AI-Powered
+    </div>
+  </div>
+
+  <!-- Page Title -->
+  <div class="gen-title-section">
+    <h1 class="gen-main-title">
+      Generate Questions as per
+      <span class="gradient-text">Your Exam</span>
+    </h1>
+    <p class="gen-main-sub">Select your exam, choose topics, set difficulty & let AI create your perfect MCQ exam</p>
+  </div>
+
+  <!-- Step Indicator -->
+  <div class="step-indicator">
+    <div class="step-item" [class.active]="currentStep === 1" [class.done]="currentStep > 1" (click)="currentStep > 1 ? goToStep(1) : null">
+      <div class="step-circle">
+        <span *ngIf="currentStep <= 1">1</span>
+        <span *ngIf="currentStep > 1">✓</span>
+      </div>
+      <div class="step-info">
+        <div class="step-label">Step 1</div>
+        <div class="step-name">Select Exam</div>
+      </div>
+    </div>
+    <div class="step-connector" [class.done]="currentStep > 1"></div>
+    <div class="step-item" [class.active]="currentStep === 2" [class.done]="currentStep > 2" (click)="currentStep > 2 ? goToStep(2) : null">
+      <div class="step-circle">
+        <span *ngIf="currentStep <= 2">2</span>
+        <span *ngIf="currentStep > 2">✓</span>
+      </div>
+      <div class="step-info">
+        <div class="step-label">Step 2</div>
+        <div class="step-name">Choose Topics</div>
+      </div>
+    </div>
+    <div class="step-connector" [class.done]="currentStep > 2"></div>
+    <div class="step-item" [class.active]="currentStep === 3">
+      <div class="step-circle">3</div>
+      <div class="step-info">
+        <div class="step-label">Step 3</div>
+        <div class="step-name">Configure & Generate</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── STEP 1: Select Exam ─── -->
+  <div class="step-content" *ngIf="currentStep === 1">
+    <div class="step-card">
+      <div class="step-card-header">
+        <lucide-icon [img]="BookOpen" [size]="22"></lucide-icon>
+        <h2>Choose Your Exam</h2>
+      </div>
+      <p class="step-card-sub">Select the competitive exam you want to practice for</p>
+
+      <div *ngFor="let category of categories" class="category-group">
+        <div class="category-label">{{ category }}</div>
+        <div class="exam-grid">
+          <button
+            class="exam-card"
+            *ngFor="let exam of getExamsByCategory(category)"
+            [class.selected]="selectedExam?.exam === exam.exam"
+            (click)="selectExam(exam)"
+          >
+            <div class="exam-card-inner">
+              <div class="exam-icon">{{ exam.exam.includes('RRB') ? '🚂' : exam.exam.includes('SSC') ? '🏛️' : exam.exam.includes('UPSC') ? '⚖️' : exam.exam.includes('NEET') ? '🩺' : exam.exam.includes('JEE') ? '⚙️' : exam.exam.includes('CUET') ? '🎓' : exam.exam.includes('IBPS') || exam.exam.includes('SBI') ? '🏦' : '📊' }}</div>
+              <div class="exam-name">{{ exam.exam }}</div>
+              <div class="exam-subjects">{{ exam.syllabus.length }} subjects</div>
+            </div>
+            <div class="exam-check" *ngIf="selectedExam?.exam === exam.exam">✓</div>
+          </button>
+        </div>
+      </div>
+
+      <!-- Step 1 Cards... -->
+    </div>
+  </div>
+
+  <!-- ─── STEP 2: Choose Topics ─── -->
+  <div class="step-content" *ngIf="currentStep === 2">
+    <div class="step-card">
+      <div class="step-card-header">
+        <lucide-icon [img]="Target" [size]="22"></lucide-icon>
+        <h2>Select Topics for {{ selectedExam?.exam }}</h2>
+      </div>
+      <p class="step-card-sub">
+        Choose specific subtopics you want questions from.
+        <span class="topic-count-badge">{{ totalSelectedTopics }} topic{{ totalSelectedTopics !== 1 ? 's' : '' }} selected</span>
+      </p>
+
+      <div class="subjects-list">
+        <div class="subject-block" *ngFor="let subSel of subjectSelections">
+          <div class="subject-header" (click)="subSel.expanded = !subSel.expanded">
+            <div class="subject-header-left">
+              <div class="subject-checkbox" (click)="$event.stopPropagation(); toggleAllTopics(subSel)">
+                <div class="checkbox-icon" [class.checked]="isAllSelected(subSel)" [class.partial]="isPartialSelected(subSel)">
+                  <span *ngIf="isAllSelected(subSel)">✓</span>
+                  <span *ngIf="isPartialSelected(subSel)">–</span>
+                </div>
+              </div>
+              <div>
+                <div class="subject-name">{{ subSel.subject }}</div>
+                <div class="subject-count">{{ subSel.selectedTopics.size }} / {{ getTopicsForSubject(subSel.subject).length }} selected</div>
+              </div>
+            </div>
+            <lucide-icon [img]="subSel.expanded ? ChevronUp : ChevronDown" [size]="18" class="chevron-icon"></lucide-icon>
+          </div>
+
+          <div class="topics-grid" *ngIf="subSel.expanded">
+            <button
+              class="topic-chip"
+              *ngFor="let topic of getTopicsForSubject(subSel.subject)"
+              [class.selected]="isTopicSelected(subSel, topic)"
+              (click)="toggleTopic(subSel, topic)"
+            >
+              <span class="chip-check" *ngIf="isTopicSelected(subSel, topic)">✓</span>
+              {{ topic }}
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 2 Cards... -->
+    </div>
+  </div>
+
+  <!-- ─── STEP 3: Configure & Generate ─── -->
+  <div class="step-content" *ngIf="currentStep === 3">
+    <div class="step-card">
+      <div class="step-card-header">
+        <lucide-icon [img]="Settings2" [size]="22"></lucide-icon>
+        <h2>Configure Your Exam</h2>
+      </div>
+
+      <!-- Summary Card -->
+      <div class="summary-card">
+        <div class="summary-row">
+          <span class="summary-label">📚 Exam</span>
+          <span class="summary-value">{{ selectedExam?.exam }}</span>
+        </div>
+        <div class="summary-row">
+          <span class="summary-label">🎯 Topics</span>
+          <span class="summary-value">{{ totalSelectedTopics }} topic(s) across {{ selectedSubjectCount }} subject(s)</span>
+        </div>
+      </div>
+
+      <!-- Difficulty -->
+      <div class="section-label">Difficulty Level</div>
+      <div class="difficulty-grid">
+        <button
+          class="diff-btn"
+          *ngFor="let d of difficultyOptions"
+          [class.active]="selectedDifficulty === d.value"
+          (click)="selectedDifficulty = d.value"
+        >
+          <span class="diff-emoji">{{ d.emoji }}</span>
+          <span class="diff-label">{{ d.label }}</span>
+          <span class="diff-desc">{{ d.desc }}</span>
+        </button>
+      </div>
+
+      <!-- Question Count -->
+      <div class="section-label">Number of Questions</div>
+      <div class="count-grid">
+        <button
+          class="count-btn"
+          *ngFor="let c of countOptions"
+          [class.active]="selectedCount === c"
+          (click)="selectedCount = c"
+        >{{ c }}</button>
+      </div>
+
+      <!-- Custom Prompt -->
+      <div class="section-label">
+        Additional Instructions
+        <span class="optional-badge">Optional</span>
+      </div>
+      <textarea
+        class="custom-prompt"
+        [(ngModel)]="customPrompt"
+        placeholder="e.g. Focus on numerical/calculation-based questions, include questions from 2023 pattern, avoid theory-only questions..."
+        rows="3"
+      ></textarea>
+
+      <!-- Error -->
+      <div class="error-banner" *ngIf="errorMessage">
+        ⚠️ {{ errorMessage }}
+      </div>
+
+      <!-- Step 3 Cards... -->
+    </div>
+  </div>
+
+  <!-- ─── Global Floating Footers ─── -->
+  <div class="step-footer" *ngIf="currentStep === 1">
+    <button class="btn-next" [disabled]="!selectedExam" (click)="goToStep(2)">
+      Continue to Topics
+      <lucide-icon [img]="ArrowRight" [size]="18"></lucide-icon>
+    </button>
+  </div>
+
+  <div class="step-footer" *ngIf="currentStep === 2">
+    <button class="btn-back-step" (click)="goToStep(1)">
+      <lucide-icon [img]="ArrowLeft" [size]="18"></lucide-icon>
+      Back
+    </button>
+    <button class="btn-next" [disabled]="!canProceedStep2" (click)="goToStep(3)">
+      Continue to Settings
+      <lucide-icon [img]="ArrowRight" [size]="18"></lucide-icon>
+    </button>
+  </div>
+
+  <div class="step-footer" *ngIf="currentStep === 3">
+    <button class="btn-back-step" (click)="goToStep(2)">
+      <lucide-icon [img]="ArrowLeft" [size]="18"></lucide-icon>
+      Back
+    </button>
+    <button class="btn-generate-main" (click)="generate()" [disabled]="isGenerating">
+      <lucide-icon [img]="Sparkles" [size]="18"></lucide-icon>
+      Generate {{ selectedCount }} MCQ Questions
+    </button>
+  </div>
+
+</div>

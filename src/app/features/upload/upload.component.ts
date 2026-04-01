@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { ExamService } from '../../core/services/exam.service';
 import { PdfExtractorService } from '../../core/services/pdf-extractor.service';
-import { LucideAngularModule, UploadCloud, FileText, CheckCircle2, Sparkles } from 'lucide-angular';
+import { LucideAngularModule, UploadCloud, FileText, CheckCircle2, Sparkles, BookOpen } from 'lucide-angular';
 import { finalize } from 'rxjs';
 import { FormsModule } from '@angular/forms';
 
@@ -22,6 +22,8 @@ export class UploadComponent {
   loadingStep = '';
   errorMessage = '';
 
+  activeTab: 'pdf' | 'syllabus' = 'syllabus';
+
   // Dialog state
   showGenerateDialog = false;
   selectedDifficulty: Difficulty = 'medium';
@@ -32,6 +34,7 @@ export class UploadComponent {
   readonly FileText = FileText;
   readonly CheckCircle2 = CheckCircle2;
   readonly Sparkles = Sparkles;
+  readonly BookOpen = BookOpen;
 
   readonly countOptions = [10, 15, 20, 25];
   readonly difficultyOptions: { value: Difficulty; label: string; desc: string }[] = [
@@ -77,8 +80,17 @@ export class UploadComponent {
         error: (err: any) => {
           this.isExtracting = false;
           this.loadingStep = '';
-          if (err?.message?.includes('429') || err?.message?.includes('quota')) {
-            this.errorMessage = 'Google API Free Tier rate limit reached. Please wait 15 seconds and try again.';
+          const errStr = typeof err === 'object' ? JSON.stringify(err) : String(err);
+          const errMsg = err?.message || err?.error?.error?.message || '';
+          
+          if (
+            errStr.includes('429') ||
+            errStr.toLowerCase().includes('quota') ||
+            errStr.includes('RESOURCE_EXHAUSTED') ||
+            errMsg.includes('429') ||
+            errMsg.toLowerCase().includes('quota')
+          ) {
+            this.errorMessage = 'Google API Free Tier rate limit reached. Please wait a minute and try again (Limit is usually 15 RPM).';
           } else {
             this.errorMessage = 'An error occurred while analyzing the document.';
           }
@@ -104,8 +116,17 @@ export class UploadComponent {
         },
         error: (err: any) => {
           this.loadingStep = '';
-          if (err?.message?.includes('429') || err?.message?.includes('quota')) {
-             this.errorMessage = 'Google API Free Tier rate limit reached. Please wait 15 seconds and try again.';
+          const errStr = typeof err === 'object' ? JSON.stringify(err) : String(err);
+          const errMsg = err?.message || err?.error?.error?.message || '';
+
+          if (
+            errStr.includes('429') ||
+            errStr.toLowerCase().includes('quota') ||
+            errStr.includes('RESOURCE_EXHAUSTED') ||
+            errMsg.includes('429') ||
+            errMsg.toLowerCase().includes('quota')
+          ) {
+             this.errorMessage = 'Google API Free Tier rate limit reached. Please wait a minute and try again (Limit is usually 15 RPM).';
           } else {
              this.errorMessage = 'An error occurred while generating the exam.';
           }
@@ -117,5 +138,13 @@ export class UploadComponent {
     this.showGenerateDialog = false;
     this.isExtracting = false;
     this.loadingStep = '';
+  }
+
+  setTab(tab: 'pdf' | 'syllabus') {
+    this.activeTab = tab;
+  }
+
+  navigateToGenerate() {
+    this.router.navigate(['/generate']);
   }
 }

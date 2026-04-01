@@ -19,7 +19,9 @@
     "@angular/platform-browser-dynamic": "^18.2.0",
     "@angular/router": "^18.2.0",
     "@google/generative-ai": "^0.24.1",
+    "apexcharts": "^3.49.1",
     "lucide-angular": "^1.0.0",
+    "ng-apexcharts": "^1.11.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.14.10"

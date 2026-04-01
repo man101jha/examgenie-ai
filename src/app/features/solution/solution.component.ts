@@ -74,13 +74,26 @@ export class SolutionComponent {
     this.loadingExplanations.add(q.id);
     this.pdfExtractor.generateExplanations([q]).subscribe({
       next: (explanations) => {
-        this.examService.updateQuestionExplanations(explanations);
+        // format explanation blobs into legible blocks
+        const formattedExplanations: Record<string, string> = {};
+        for (const [id, text] of Object.entries(explanations)) {
+          formattedExplanations[id] = text.replace(/(Step \d+:)/gi, '\n\n$1').trim();
+        }
+        this.examService.updateQuestionExplanations(formattedExplanations);
         this.loadingExplanations.delete(q.id);
       },
       error: () => {
         this.loadingExplanations.delete(q.id);
       }
     });
+  }
+
+  getExplanationSteps(q: Question): string[] {
+    if (!q.explanation) return [];
+    
+    // Split by common step markers: "Step 1:", "Step 2.", "1.", etc.
+    const normalized = q.explanation.replace(/(Step \d+[:.-]?|\d+\.)/gi, '|||$1');
+    return normalized.split('|||').map(s => s.trim()).filter(s => s.length > 0);
   }
 
   goBack() {

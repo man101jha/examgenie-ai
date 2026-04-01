@@ -16,10 +16,14 @@ export class ExamService {
     correctAnswers: 0,
     incorrectAnswers: 0,
     skippedAnswers: 0,
-    totalMarksTaken: 0
+    totalMarksTaken: 0,
+    timeSpentPerQuestion: {},
+    totalTimeSpent: 0
   });
 
   readonly state$ = this.state.asReadonly();
+  
+  private timerInterval: any;
 
   constructor() { }
 
@@ -40,8 +44,26 @@ export class ExamService {
       correctAnswers: 0,
       incorrectAnswers: 0,
       skippedAnswers: 0,
-      totalMarksTaken: Object.values(questions).reduce((sum, q) => sum + q.marks, 0)
+      totalMarksTaken: Object.values(questions).reduce((sum, q) => sum + q.marks, 0),
+      timeSpentPerQuestion: questions.reduce((acc, q) => ({ ...acc, [q.id]: 0 }), {}),
+      totalTimeSpent: 0
     });
+
+    if (this.timerInterval) clearInterval(this.timerInterval);
+    this.timerInterval = setInterval(() => {
+      this.state.update(s => {
+        if (s.isSubmitted || s.questions.length === 0) return s;
+        const currentQ = s.questions[s.currentQuestionIndex];
+        return {
+          ...s,
+          totalTimeSpent: s.totalTimeSpent + 1,
+          timeSpentPerQuestion: {
+            ...s.timeSpentPerQuestion,
+            [currentQ.id]: (s.timeSpentPerQuestion[currentQ.id] || 0) + 1
+          }
+        };
+      });
+    }, 1000);
   }
 
   updateQuestionExplanations(explanations: { [questionId: string]: string }) {
@@ -151,6 +173,8 @@ export class ExamService {
   }
 
   submitExam() {
+    if (this.timerInterval) clearInterval(this.timerInterval);
+
     this.state.update(s => {
       let correct = 0;
       let incorrect = 0;
