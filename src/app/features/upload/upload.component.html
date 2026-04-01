@@ -1,4 +1,13 @@
 <div class="home-container">
+  
+  <!-- Branding (Global to allow mobile reordering) -->
+  <div class="brand" *ngIf="!showGenerateDialog">
+    <img src="logo.png" alt="ExamGenie Logo" class="brand-logo">
+    <div>
+      <div class="brand-name">ExamGenie</div>
+      <div class="brand-tagline">AI-Powered Exam Generator</div>
+    </div>
+  </div>
 
   <!-- Loading Overlay -->
   <div class="loading-overlay" *ngIf="isExtracting || isGenerating">
@@ -14,39 +23,31 @@
     </div>
   </div>
 
-  <!-- Left Panel: Branding + Features -->
+  <!-- Left Panel: Features & Info -->
   <div class="left-panel" *ngIf="!showGenerateDialog">
-    <div class="brand">
-      <img src="logo.png" alt="ExamGenie Logo" class="brand-logo">
-      <div>
-        <div class="brand-name">ExamGenie</div>
-        <div class="brand-tagline">AI-Powered Exam Generator</div>
-      </div>
-    </div>
-
-    <h1 class="hero-title">Turn any PDF into<br><span class="highlight">a smart exam</span></h1>
-    <p class="hero-sub">Upload your question paper or study material and let AI do the rest — instantly creating an interactive exam with answers, scoring, and step-by-step explanations.</p>
+    <h1 class="hero-title">Your Ultimate AI<br><span class="highlight">Exam Generator</span></h1>
+    <p class="hero-sub">Transform PDFs or competitive exam syllabi into smart, interactive tests with instant scoring and step-by-step AI explanations.</p>
 
     <div class="features-list">
       <div class="feature-item">
         <div class="feat-icon">📄</div>
         <div>
-          <div class="feat-title">Upload Any PDF</div>
-          <div class="feat-desc">Question papers, textbook chapters, study notes — any PDF works</div>
+          <div class="feat-title">PDF to Exam</div>
+          <div class="feat-desc">Upload any question paper or study notes and let AI extract or generate a test for you.</div>
         </div>
       </div>
       <div class="feature-item">
-        <div class="feat-icon">🤖</div>
+        <div class="feat-icon">🎯</div>
         <div>
-          <div class="feat-title">AI Extraction &amp; Generation</div>
-          <div class="feat-desc">Extracts existing questions or generates new ones at Easy, Medium or Hard level</div>
+          <div class="feat-title">Exam-Based Generator</div>
+          <div class="feat-desc">Select any competitive exam (JEE, NEET, SSC, etc.) and generate questions for specific topics.</div>
         </div>
       </div>
       <div class="feature-item">
         <div class="feat-icon">📊</div>
         <div>
-          <div class="feat-title">Real-time Exam Interface</div>
-          <div class="feat-desc">Question palette, mark for review, timer-ready layout — just like real exams</div>
+          <div class="feat-title">Detailed Analytics</div>
+          <div class="feat-desc">Get a full scorecard and a deep-dive report with time-tracking per question.</div>
         </div>
       </div>
       <div class="feature-item">

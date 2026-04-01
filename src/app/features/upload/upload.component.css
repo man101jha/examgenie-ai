@@ -1,15 +1,25 @@
 /* === Layout === */
 .home-container {
   min-height: 100vh;
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr 420px;
+  grid-template-areas: 
+    "brand right"
+    "left right";
   align-items: center;
   justify-content: center;
-  gap: 64px;
+  column-gap: 64px;
   padding: 48px 40px;
   background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
   position: relative;
   overflow: hidden;
+  max-width: 1200px;
+  margin: 0 auto;
 }
+
+.brand { grid-area: brand; align-self: end; padding-bottom: 20px; z-index: 1; }
+.left-panel { grid-area: left; align-self: start; z-index: 1; }
+.right-panel { grid-area: right; z-index: 1; }
 
 /* Subtle animated background particles */
 .home-container::before {
@@ -95,12 +105,10 @@
 
 /* === Left Panel === */
 .left-panel {
-  flex: 1;
   max-width: 520px;
   display: flex;
   flex-direction: column;
   gap: 28px;
-  z-index: 1;
 }
 
 .brand {
@@ -244,9 +252,10 @@
   padding-left: 14px;
 }
 
-/* === Right Panel === */
+/* Right Panel */
 .right-panel {
-  z-index: 1;
+  display: flex;
+  flex-direction: column;
 }
 
 .upload-card {
@@ -593,13 +602,26 @@
 /* === Mobile Responsiveness === */
 @media (max-width: 768px) {
   .home-container {
+    display: flex; /* Override Grid with Flex for mobile */
     flex-direction: column;
-    padding: 32px 20px;
-    gap: 40px;
+    padding: 32px 16px;
+    gap: 32px;
+    overflow-x: hidden;
   }
   
-  .left-panel, .right-panel, .upload-card, .generate-dialog {
-    max-width: 100%;
+  .brand {
+    order: 1;
+    align-self: flex-start;
+    padding-bottom: 0px;
+  }
+  
+  .right-panel {
+    order: 2;
+    width: 100%;
+  }
+  
+  .left-panel {
+    order: 3;
     width: 100%;
   }
   
@@ -608,7 +630,10 @@
   }
   
   .upload-card, .generate-dialog {
-    padding: 24px;
+    padding: 24px 20px;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
   }
   
   .difficulty-grid, .count-grid {
