@@ -1,12 +1,12 @@
 <div class="gen-page">
 
   <!-- Loading Overlay -->
-  <div class="loading-overlay" *ngIf="isGenerating">
+  <div class="loading-overlay" *ngIf="isGenerating || isFetchingSyllabus">
     <div class="loading-card">
       <div class="pulse-rings">
         <span></span><span></span><span></span>
       </div>
-      <div class="loading-title">ExamGenie is crafting your exam...</div>
+      <div class="loading-title">{{ isFetchingSyllabus ? 'Analyzing Syllabus...' : 'Crafting Your Exam...' }}</div>
       <div class="loading-step">{{ loadingStep }}</div>
       <div class="loading-dots">
         <span></span><span></span><span></span>
@@ -100,7 +100,46 @@
         </div>
       </div>
 
-      <!-- Step 1 Cards... -->
+      <!-- Other Option -->
+      <div class="category-group">
+        <div class="category-label">Couldn't find your exam?</div>
+        <div class="exam-grid">
+          <button
+            class="exam-card other-card"
+            [class.selected]="isOtherExamSelected"
+            (click)="selectExam('other')"
+          >
+            <div class="exam-card-inner">
+              <div class="exam-icon">🔍</div>
+              <div class="exam-name">Other Exam</div>
+              <div class="exam-subjects">Type your exam name</div>
+            </div>
+            <div class="exam-check" *ngIf="isOtherExamSelected">✓</div>
+          </button>
+        </div>
+      </div>
+
+      <!-- Custom Exam Input -->
+      <div class="custom-exam-input-group" *ngIf="isOtherExamSelected">
+        <div class="input-label">Enter Exam Name</div>
+        <div class="input-with-button">
+          <input 
+            type="text" 
+            [(ngModel)]="customExamName" 
+            placeholder="e.g. GMAT, SAT, GATE, etc."
+            (keyup.enter)="fetchCustomSyllabus()" />
+          <button class="fetch-btn" (click)="fetchCustomSyllabus()" [disabled]="!customExamName.trim() || isFetchingSyllabus">
+            <lucide-icon [img]="Sparkles" [size]="16"></lucide-icon>
+            Fetch Topics
+          </button>
+        </div>
+        <p class="input-hint">AI will generate a relevant syllabus for topic selection.</p>
+      </div>
+
+      <!-- Error -->
+      <div class="error-banner" *ngIf="errorMessage && currentStep === 1">
+        ⚠️ {{ errorMessage }}
+      </div>
     </div>
   </div>
 
@@ -221,7 +260,7 @@
 
   <!-- ─── Global Floating Footers ─── -->
   <div class="step-footer" *ngIf="currentStep === 1">
-    <button class="btn-next" [disabled]="!selectedExam" (click)="goToStep(2)">
+    <button class="btn-next" [disabled]="!selectedExam || isOtherExamSelected" (click)="goToStep(2)">
       Continue to Topics
       <lucide-icon [img]="ArrowRight" [size]="18"></lucide-icon>
     </button>

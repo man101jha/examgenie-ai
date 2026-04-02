@@ -65,8 +65,13 @@ export class GenerateComponent {
 
   // Generation state
   isGenerating = false;
+  isFetchingSyllabus = false;
   errorMessage = '';
   loadingStep = '';
+
+  // Other Exam
+  isOtherExamSelected = false;
+  customExamName = '';
 
   constructor(
     private pdfExtractor: PdfExtractorService,
@@ -80,14 +85,54 @@ export class GenerateComponent {
     return this.examData.filter(e => e.category === category);
   }
 
-  selectExam(exam: ExamSyllabus) {
-    this.selectedExam = exam;
-    // Initialize subject selections
-    this.subjectSelections = exam.syllabus.map(s => ({
-      subject: s.subject,
-      selectedTopics: new Set<string>(),
-      expanded: true
-    }));
+  selectExam(exam: ExamSyllabus | 'other') {
+    if (exam === 'other') {
+      this.isOtherExamSelected = true;
+      this.selectedExam = null;
+      this.subjectSelections = [];
+    } else {
+      this.isOtherExamSelected = false;
+      this.selectedExam = exam;
+      // Initialize subject selections
+      this.subjectSelections = exam.syllabus.map(s => ({
+        subject: s.subject,
+        selectedTopics: new Set<string>(),
+        expanded: true
+      }));
+    }
+  }
+
+  fetchCustomSyllabus() {
+    if (!this.customExamName.trim()) return;
+
+    this.isFetchingSyllabus = true;
+    this.errorMessage = '';
+    this.loadingStep = `Analyzing ${this.customExamName} syllabus with AI...`;
+
+    this.pdfExtractor.fetchSyllabusForExam(this.customExamName)
+      .pipe(finalize(() => {
+        this.isFetchingSyllabus = false;
+        this.loadingStep = '';
+      }))
+      .subscribe({
+        next: (res) => {
+          const mockExam: ExamSyllabus = {
+            exam: this.customExamName,
+            category: 'Custom',
+            syllabus: res.subjects
+          };
+          this.selectedExam = mockExam;
+          this.subjectSelections = res.subjects.map(s => ({
+            subject: s.subject,
+            selectedTopics: new Set<string>(),
+            expanded: true
+          }));
+          this.goToStep(2);
+        },
+        error: (err) => {
+          this.errorMessage = err.message || 'Failed to fetch syllabus. Please try a more common exam name.';
+        }
+      });
   }
 
   // ─── Step 2 ───────────────────────────────────────────────────────────────────

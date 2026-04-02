@@ -46,6 +46,40 @@ export class PdfExtractorService {
     );
   }
 
+  fetchSyllabusForExam(examName: string): Observable<{ subjects: any[] }> {
+    return from(this.generateSyllabus(examName));
+  }
+
+  private async generateSyllabus(examName: string): Promise<{ subjects: any[] }> {
+    const model = this.genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
+    const prompt = `You are an expert academic advisor for competitive examinations.
+Analyze the "${examName}" examination and provide its comprehensive syllabus and subject-wise topic list.
+Output strictly as a JSON object in this format:
+{
+  "subjects": [
+    {
+      "subject": "Subject Name",
+      "topics": "Comma separated string of all topics...",
+      "topicList": ["Topic 1", "Topic 2", "Topic 3", ...]
+    }
+  ]
+}
+Ensure the topics are accurate and comprehensive for the ${examName} exam.
+Do not include any markdown or extra text. Output ONLY the raw JSON.`;
+
+    const result = await model.generateContent(prompt);
+    const response = await result.response;
+    let text = response.text();
+    text = text.replace(/```json/gi, '').replace(/```/g, '').trim();
+
+    try {
+      return JSON.parse(text);
+    } catch (e) {
+      console.error('Failed to parse syllabus AI response', e);
+      throw new Error('Could not generate syllabus for this exam. Please check the spelling or try another exam.');
+    }
+  }
+
   generateExplanations(questions: Question[]): Observable<{ [questionId: string]: string }> {
     return from(this.fetchExplanations(questions));
   }
@@ -60,6 +94,7 @@ export class PdfExtractorService {
         {
           "question_number": 1,
           "question": "Full question text...",
+          "passage": "Optional long passage text if the question is based on one (e.g., Reading Comprehension)...",
           "options": {
             "A": "Option A text",
             "B": "Option B text",
@@ -70,6 +105,9 @@ export class PdfExtractorService {
         }
       ]
       CRITICAL RULES:
+      - Use semantic HTML tags (<b>, <i>, <br>, <ul>, <li>, <code>) in the "passage", "question" and "options" fields for better structure and readability.
+      - If multiple questions refer to the same passage, include the IDENTICAL passage text in each question's "passage" field.
+      - If a question has no passage, set "passage" to null.
       - If a question has no options (subjective/fill-in-the-blank), set "options" to null.
       - If the answer is not provided in the document, use your knowledge to determine the correct answer and fill it in.
       - The "answer" field must only contain the option letter (e.g. "A", "B", "C", "D") for MCQ, or the numeric/word answer for subjective.
@@ -105,11 +143,16 @@ export class PdfExtractorService {
         {
           "question_number": 1,
           "question": "Question text...",
+          "passage": "Optional passage text...",
           "options": { "A": "...", "B": "...", "C": "...", "D": "..." },
           "answer": "B"
         }
       ]
-      Generate all ${count} questions. Ensure variety in topics covered in the document.
+      RULES:
+      - Use semantic HTML tags (<b>, <i>, <br>, <ul>, <li>, <code>) in the "passage", "question" and "options" fields to improve formatting and readability.
+      - If multiple questions refer to the same passage (Reading Comprehension), include the IDENTICAL passage text in each question's "passage" field.
+      - If a question has no passage, set "passage" to null.
+      - Generate all ${count} questions. Ensure variety in topics covered in the document.
     `;
 
     const result = await model.generateContent([prompt, base64Data]);
@@ -152,17 +195,21 @@ ${extra}
 STRICT RULES:
 1. ALL questions MUST be MCQ only — exactly 4 options (A, B, C, D).
 2. Questions must be strictly from the provided topics and relevant to the ${examName} exam pattern.
-3. Distribute questions proportionally across the provided subjects/topics.
-4. Difficulty must be consistently ${difficulty.toUpperCase()} throughout.
-5. Each question must have one unambiguously correct answer.
-6. Options should be plausible and not trivially obvious.
-7. Do NOT repeat questions or make them too similar to each other.
+3. For "Reading Comprehension" or "Passage-based" topics, generate a high-quality passage (300-500 words) and then generate multiple questions (usually 4-5) based on that passage.
+4. If multiple questions refer to the same passage, include the EXACT SAME passage text in the "passage" field for all those questions. This is CRITICAL for UI grouping.
+5. Distribute questions proportionally across the provided subjects/topics.
+6. Difficulty must be consistently ${difficulty.toUpperCase()} throughout.
+7. Each question must have one unambiguously correct answer.
+8. Options should be plausible and not trivially obvious.
+9. Do NOT repeat questions or make them too similar to each other.
+10. Use semantic HTML tags (<b>, <i>, <br>, <ul>, <li>, <code>) in the "passage", "question" and "options" fields where appropriate for structured presentation.
 
 Output ONLY a raw JSON array in this exact format with no markdown or extra text:
 [
   {
     "question_number": 1,
     "question": "Full question text here?",
+    "passage": "Passage text here (or null if not applicable)...",
     "options": { "A": "Option A text", "B": "Option B text", "C": "Option C text", "D": "Option D text" },
     "answer": "B"
   }
@@ -189,8 +236,9 @@ Generate all ${count} questions now.`;
 
     const prompt = `
       You are a math and reasoning tutor. For each question below, provide a concise step-by-step explanation of how to arrive at the correct answer.
+      Use semantic HTML tags (<b>, <i>, <br>, <ul>, <li>, <code>) in the explanation text for better structure and clarity.
       Output ONLY a JSON object where the key is the question number (e.g. "1", "2") and the value is the explanation string.
-      Example: { "1": "Step 1: ... Step 2: ... therefore the answer is B.", "2": "..." }
+      Example: { "1": "Step 1: ...<br>Step 2: ... therefore the answer is B.", "2": "..." }
 
       Questions:
       ${questionsForPrompt}
@@ -256,7 +304,8 @@ Generate all ${count} questions now.`;
           options,
           correctOptionId,
           marks: 3,
-          negativeMarks: options.length > 0 ? 1 : 0
+          negativeMarks: options.length > 0 ? 1 : 0,
+          passage: q.passage ? q.passage.trim() : undefined
         };
       });
     } catch (e) {

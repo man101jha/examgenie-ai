@@ -14,6 +14,7 @@ export interface Question {
   marks: number;
   negativeMarks: number;
   explanation?: string;
+  passage?: string; // For Reading Comprehension
 }
 
 export interface ExamState {

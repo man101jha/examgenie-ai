@@ -27,8 +27,7 @@
           <div class="result-pill" [class]="'pill-' + getResult(q)">
             {{ getResult(q) === 'correct' ? '✓ Correct' : getResult(q) === 'wrong' ? '✗ Wrong' : '— Skipped' }}
           </div>
-          <span class="q-preview" *ngIf="!isExpanded(i)">
-            {{ q.text | slice:0:80 }}{{ q.text.length > 80 ? '...' : '' }}
+          <span class="q-preview" *ngIf="!isExpanded(i)" [innerHTML]="(q.text | slice:0:80) + (q.text.length > 80 ? '...' : '')">
           </span>
         </div>
         <lucide-icon [img]="isExpanded(i) ? ChevronUp : ChevronDown" [size]="18" class="chevron"></lucide-icon>
@@ -36,14 +35,20 @@
 
       <!-- Expanded Content -->
       <div class="card-body" *ngIf="isExpanded(i)">
-        <p class="q-text">{{ q.text }}</p>
+        <!-- Passage for Review -->
+        <div class="sol-passage-wrapper" *ngIf="q.passage">
+          <div class="sol-passage-header">Passage Reference</div>
+          <div class="sol-passage-content" [innerHTML]="q.passage"></div>
+        </div>
+
+        <p class="q-text" [innerHTML]="q.text"></p>
 
         <!-- MCQ Options -->
         <div class="options-grid" *ngIf="q.options && q.options.length > 0">
           <div class="solution-option" *ngFor="let opt of q.options"
                [class]="getOptionClass(q, opt.id)">
             <span class="opt-badge">{{ opt.id }}</span>
-            <span class="opt-text">{{ opt.text }}</span>
+            <span class="opt-text" [innerHTML]="opt.text"></span>
             <span class="opt-tag correct-tag" *ngIf="opt.id === q.correctOptionId">✓ Correct</span>
             <span class="opt-tag wrong-tag" *ngIf="opt.id === getUserAnswer(q) && opt.id !== q.correctOptionId">✗ Your Answer</span>
           </div>
@@ -53,14 +58,14 @@
         <div class="subjective-result" *ngIf="!q.options || q.options.length === 0">
           <div class="sb-row">
             <span class="sb-label">Your Answer:</span>
-            <span class="sb-val" [class.sb-correct]="getResult(q) === 'correct'"
-                  [class.sb-wrong]="getResult(q) === 'wrong'">
-              {{ getUserAnswer(q) || 'No answer given' }}
-            </span>
+              <span class="sb-val" [class.sb-correct]="getResult(q) === 'correct'"
+                    [class.sb-wrong]="getResult(q) === 'wrong'"
+                    [innerHTML]="getUserAnswer(q) || 'No answer given'">
+              </span>
           </div>
           <div class="sb-row">
             <span class="sb-label">Correct Answer:</span>
-            <span class="sb-val sb-correct">{{ q.correctOptionId }}</span>
+            <span class="sb-val sb-correct" [innerHTML]="q.correctOptionId"></span>
           </div>
         </div>
 
@@ -84,8 +89,7 @@
           <div *ngIf="q.explanation && !isLoadingExplanation(q)">
             <div class="explanation-title">💡 AI Explanation</div>
             <div class="explanation-steps">
-              <p *ngFor="let step of getExplanationSteps(q)" class="explanation-step">
-                {{ step }}
+              <p *ngFor="let step of getExplanationSteps(q)" class="explanation-step" [innerHTML]="step">
               </p>
             </div>
           </div>

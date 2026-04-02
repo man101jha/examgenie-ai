@@ -7,30 +7,38 @@
     </button>
   </div>
 
-  <div class="q-content flex-col">
-    <div class="q-text" [innerHTML]="q.text"></div>
-
-    <!-- Multiple Choice (Options) -->
-    <div class="options-list flex-col" *ngIf="q.options && q.options.length > 0">
-      <label class="option-item flex items-center" *ngFor="let opt of q.options" 
-             [class.selected]="selectedOption === opt.id">
-        <div class="radio-circle flex items-center justify-center" [class.checked]="selectedOption === opt.id">
-          <span class="opt-label" *ngIf="selectedOption !== opt.id">{{ opt.id }}</span>
-          <div class="dot" *ngIf="selectedOption === opt.id"></div>
-        </div>
-        <input type="radio" [name]="q.id" [value]="opt.id" 
-               [checked]="selectedOption === opt.id" 
-               (change)="selectOption(opt.id)" hidden>
-        <span class="opt-text" [innerHTML]="opt.text"></span>
-      </label>
+  <div class="content-wrapper flex flex-1 overflow-hidden" [class.has-passage]="!!q.passage">
+    <!-- Passage Section (Left) -->
+    <div class="passage-section" *ngIf="q.passage">
+      <div class="passage-inner" [innerHTML]="q.passage"></div>
     </div>
 
-    <!-- Subjective Type (No Options) -->
-    <div class="subjective-input w-full" *ngIf="!q.options || q.options.length === 0">
-      <input type="text" class="text-answer-input" 
-             placeholder="Type your answer here..."
-             [ngModel]="selectedOption || ''"
-             (ngModelChange)="onTextInput($event)" />
+    <!-- Question Section (Right or Center) -->
+    <div class="q-content flex-col flex-1">
+      <div class="q-text" [innerHTML]="q.text"></div>
+
+      <!-- Multiple Choice (Options) -->
+      <div class="options-list flex-col" *ngIf="q.options && q.options.length > 0">
+        <label class="option-item flex items-center" *ngFor="let opt of q.options" 
+               [class.selected]="selectedOption === opt.id">
+          <div class="radio-circle flex items-center justify-center" [class.checked]="selectedOption === opt.id">
+            <span class="opt-label" *ngIf="selectedOption !== opt.id">{{ opt.id }}</span>
+            <div class="dot" *ngIf="selectedOption === opt.id"></div>
+          </div>
+          <input type="radio" [name]="q.id" [value]="opt.id" 
+                 [checked]="selectedOption === opt.id" 
+                 (change)="selectOption(opt.id)" hidden>
+          <span class="opt-text" [innerHTML]="opt.text"></span>
+        </label>
+      </div>
+
+      <!-- Subjective Type (No Options) -->
+      <div class="subjective-input w-full" *ngIf="!q.options || q.options.length === 0">
+        <input type="text" class="text-answer-input" 
+               placeholder="Type your answer here..."
+               [ngModel]="selectedOption || ''"
+               (ngModelChange)="onTextInput($event)" />
+      </div>
     </div>
   </div>
 
