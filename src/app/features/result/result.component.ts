@@ -2,6 +2,7 @@ import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { ExamService } from '../../core/services/exam.service';
+import { HistoryService } from '../../core/services/history.service';
 import { LucideAngularModule, ArrowLeft, ChevronDown, ArrowRight } from 'lucide-angular';
 import { NgApexchartsModule } from 'ng-apexcharts';
 import {
@@ -45,6 +46,7 @@ export type ChartOptions = {
 export class ResultComponent {
   public examService = inject(ExamService);
   private router = inject(Router);
+  private historyService = inject(HistoryService);
 
   readonly state = this.examService.state$;
   readonly ArrowLeft = ArrowLeft;
@@ -59,11 +61,21 @@ export class ResultComponent {
   formattedTotalTime = '0m 0s';
   timePercentages = { correct: 0, incorrect: 0, skipped: 0 };
 
+
+
   constructor() {
     if (this.state().questions.length === 0) {
       this.router.navigate(['/upload']);
     } else {
       this.initDashboards();
+      this.saveToHistory();
+    }
+  }
+
+  private async saveToHistory() {
+    const s = this.state();
+    if (s.isSubmitted) {
+      await this.historyService.saveAttempt(s);
     }
   }
 

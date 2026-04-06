@@ -2,7 +2,7 @@ import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
-import { LucideAngularModule, LogOut, User, LogIn } from 'lucide-angular';
+import { LucideAngularModule, LogOut, User, LogIn, History } from 'lucide-angular';
 
 @Component({
   selector: 'app-header',
@@ -30,6 +30,12 @@ import { LucideAngularModule, LogOut, User, LogIn } from 'lucide-angular';
                 <span class="user-email">{{ user.email }}</span>
               </div>
             </div>
+
+            <button class="btn-history" routerLink="/history" title="My History">
+              <lucide-icon [name]="History" size="18"></lucide-icon>
+              <span>History</span>
+            </button>
+
             <button class="btn-logout" (click)="logout()" title="Sign Out">
               <lucide-icon [name]="LogOut" size="18"></lucide-icon>
               <span>Logout</span>
@@ -167,13 +173,27 @@ import { LucideAngularModule, LogOut, User, LogIn } from 'lucide-angular';
 
     .btn-logout:hover {
       background: #fef2f2;
-      color: #ef4444;
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
     }
 
-    .btn-login {
-      background: #2563eb;
-      color: white;
-      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+    .btn-history {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: transparent;
+      color: #64748b;
+      font-weight: 600;
+      font-size: 0.875rem;
+      padding: 0.5rem 0.75rem;
+      border-radius: 8px;
+      transition: all 0.2s;
+      border: none;
+      cursor: pointer;
+    }
+
+    .btn-history:hover {
+      background: #f1f5f9;
+      color: #2563eb;
     }
 
     .btn-login:hover {
@@ -201,6 +221,7 @@ export class HeaderComponent {
   readonly LogOut = LogOut;
   readonly User = User;
   readonly LogIn = LogIn;
+  readonly History = History;
 
   async logout() {
     await this.authService.logout();

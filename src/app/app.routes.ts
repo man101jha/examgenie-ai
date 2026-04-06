@@ -8,6 +8,7 @@ import { GenerateComponent } from './features/generate/generate.component';
 import { ReportComponent } from './features/report/report.component';
 import { LoginComponent } from './features/auth/login/login.component';
 import { RegisterComponent } from './features/auth/register/register.component';
+import { HistoryComponent } from './features/history/history.component';
 import { authGuard, redirectLoggedInGuard } from './core/guards/auth.guard';
 
 export const routes: Routes = [
@@ -24,7 +25,8 @@ export const routes: Routes = [
       { path: 'pre-submit', component: PreSubmitComponent },
       { path: 'result', component: ResultComponent },
       { path: 'report', component: ReportComponent },
-      { path: 'solution', component: SolutionComponent }
+      { path: 'solution', component: SolutionComponent },
+      { path: 'history', component: HistoryComponent }
     ]
   }
 ];

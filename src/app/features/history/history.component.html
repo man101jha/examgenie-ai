@@ -1,0 +1,69 @@
+<div class="history-container">
+  <!-- Header -->
+  <header class="history-header">
+    <div class="header-content">
+      <button class="back-btn" (click)="goBack()">
+        <lucide-angular [img]="ArrowLeft"></lucide-angular>
+      </button>
+      <div class="header-text">
+        <h1>My Test History</h1>
+        <p>Showing your last 30 attempts</p>
+      </div>
+    </div>
+  </header>
+
+  <main class="history-main">
+    <!-- Loading State -->
+    <div *ngIf="isLoading()" class="loading-state">
+      <div class="loader"></div>
+      <p>Fetching your past attempts...</p>
+    </div>
+
+    <!-- Empty State -->
+    <div *ngIf="!isLoading() && attempts().length === 0" class="empty-state">
+      <div class="empty-icon">
+        <lucide-angular [img]="FileText"></lucide-angular>
+      </div>
+      <h2>No attempts found</h2>
+      <p>Take a test to see your history here!</p>
+      <button class="primary-btn" (click)="startNewTest()">
+        Start a New Test
+      </button>
+    </div>
+
+    <!-- History List -->
+    <div *ngIf="!isLoading() && attempts().length > 0" class="attempts-list">
+      <div *ngFor="let attempt of attempts()" class="attempt-card" (click)="viewAttempt(attempt)">
+        <div class="card-left">
+          <div class="exam-icon">
+            <lucide-angular [img]="FileText"></lucide-angular>
+          </div>
+          <div class="exam-info">
+            <h3>{{ attempt.examTitle }}</h3>
+            <div class="meta-info">
+              <span>
+                <lucide-angular [img]="Calendar" size="14"></lucide-angular>
+                {{ formatDate(attempt.attemptedAt) }}
+              </span>
+              <span>
+                <lucide-angular [img]="Clock" size="14"></lucide-angular>
+                {{ formatTime(attempt.timeSpent) }}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div class="card-right">
+          <div class="score-badge">
+            <span class="score-val">{{ attempt.score }}</span>
+            <span class="score-total">/{{ attempt.totalMarks }}</span>
+          </div>
+          <button class="review-btn" (click)="$event.stopPropagation(); viewAttempt(attempt)">
+            <span>Review</span>
+            <lucide-angular [img]="ChevronRight" size="18"></lucide-angular>
+          </button>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>

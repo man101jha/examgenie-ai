@@ -9,6 +9,7 @@ const firebaseStorageBucket = process.env.FIREBASE_STORAGE_BUCKET;
 const firebaseMessagingSenderId = process.env.FIREBASE_MESSAGING_SENDER_ID;
 const firebaseAppId = process.env.FIREBASE_APP_ID;
 const firebaseMeasurementId = process.env.FIREBASE_MEASUREMENT_ID;
+const firebaseDatabaseUrl = process.env.FIREBASE_DATABASE_URL || 'https://examgenie-bd9e6-default-rtdb.firebaseio.com';
 
 const envConfigFile = `
 export const environment = {
@@ -21,7 +22,8 @@ export const environment = {
     storageBucket: "${firebaseStorageBucket}",
     messagingSenderId: "${firebaseMessagingSenderId}",
     appId: "${firebaseAppId}",
-    measurementId: "${firebaseMeasurementId}"
+    measurementId: "${firebaseMeasurementId}",
+    databaseURL: "${firebaseDatabaseUrl}"
   }
 };
 `;

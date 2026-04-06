@@ -46,7 +46,8 @@ export class ExamService {
       skippedAnswers: 0,
       totalMarksTaken: Object.values(questions).reduce((sum, q) => sum + q.marks, 0),
       timeSpentPerQuestion: questions.reduce((acc, q) => ({ ...acc, [q.id]: 0 }), {}),
-      totalTimeSpent: 0
+      totalTimeSpent: 0,
+      sessionId: Date.now().toString() + Math.random().toString(36).substring(2, 11)
     });
 
     if (this.timerInterval) clearInterval(this.timerInterval);
@@ -203,5 +204,10 @@ export class ExamService {
         score
       };
     });
+  }
+
+  loadHistoricalState(state: ExamState) {
+    if (this.timerInterval) clearInterval(this.timerInterval);
+    this.state.set(state);
   }
 }

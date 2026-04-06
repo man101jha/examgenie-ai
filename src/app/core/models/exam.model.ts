@@ -33,4 +33,6 @@ export interface ExamState {
   // Telemetry
   timeSpentPerQuestion: { [questionId: string]: number }; // In seconds
   totalTimeSpent: number; // In seconds
+  
+  sessionId?: string;
 }
