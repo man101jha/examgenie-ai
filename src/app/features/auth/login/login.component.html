@@ -1,0 +1,72 @@
+<div class="auth-container">
+  <div class="auth-card">
+    <div class="auth-header">
+      <div class="logo-container">
+        <div class="logo-icon">EG</div>
+        <h1>Exam<span>Genie</span></h1>
+      </div>
+      <p>Welcome back! Please login to your account.</p>
+    </div>
+
+    @if (errorMessage) {
+      <div class="error-toast">
+        <p>{{ errorMessage }}</p>
+      </div>
+    }
+
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+      <div class="form-group">
+        <label for="email">Email Address</label>
+        <div class="input-wrapper">
+          <lucide-icon [name]="Mail" size="18" class="input-icon"></lucide-icon>
+          <input 
+            type="email" 
+            id="email" 
+            formControlName="email" 
+            placeholder="name@example.com"
+            [class.invalid]="loginForm.get('email')?.invalid && loginForm.get('email')?.touched"
+          >
+        </div>
+      </div>
+
+      <div class="form-group">
+        <div class="label-row">
+          <label for="password">Password</label>
+          <a routerLink="/forgot-password" class="forgot-link">Forgot password?</a>
+        </div>
+        <div class="input-wrapper">
+          <lucide-icon [name]="Lock" size="18" class="input-icon"></lucide-icon>
+          <input 
+            type="password" 
+            id="password" 
+            formControlName="password" 
+            placeholder="••••••••"
+            [class.invalid]="loginForm.get('password')?.invalid && loginForm.get('password')?.touched"
+          >
+        </div>
+      </div>
+
+      <button type="submit" class="btn-submit" [disabled]="loginForm.invalid || isLoading">
+        @if (isLoading) {
+          <span class="spinner"></span>
+        } @else {
+          <lucide-icon [name]="LogIn" size="18"></lucide-icon>
+          <span>Sign In</span>
+        }
+      </button>
+    </form>
+
+    <div class="divider">
+      <span>OR</span>
+    </div>
+
+    <button type="button" class="btn-google" (click)="loginWithGoogle()" [disabled]="isLoading">
+      <lucide-icon [name]="Chrome" size="18"></lucide-icon>
+      <span>Continue with Google</span>
+    </button>
+
+    <p class="auth-footer">
+      Don't have an account? <a routerLink="/register">Create one now</a>
+    </p>
+  </div>
+</div>

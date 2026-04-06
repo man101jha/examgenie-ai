@@ -1,9 +1,10 @@
-import { Component, computed, signal } from '@angular/core';
+import { Component, computed, signal, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ExamService } from '../../core/services/exam.service';
 import { PdfExtractorService } from '../../core/services/pdf-extractor.service';
+import { AuthService } from '../../core/services/auth.service';
 import { EXAM_SYLLABUS_DATA, EXAM_CATEGORIES, ExamSyllabus } from '../../core/constants/syllabus-data';
 import { LucideAngularModule, Sparkles, ChevronDown, ChevronUp, CheckSquare, Square, BookOpen, Target, Settings2, ArrowLeft, ArrowRight, Zap } from 'lucide-angular';
 import { finalize } from 'rxjs';
@@ -25,6 +26,11 @@ interface SelectedSubject {
   styleUrls: ['./generate.component.css']
 })
 export class GenerateComponent {
+  private pdfExtractor = inject(PdfExtractorService);
+  private examService = inject(ExamService);
+  private router = inject(Router);
+  private authService = inject(AuthService);
+
   // Icons
   readonly Sparkles = Sparkles;
   readonly ChevronDown = ChevronDown;
@@ -73,11 +79,13 @@ export class GenerateComponent {
   isOtherExamSelected = false;
   customExamName = '';
 
-  constructor(
-    private pdfExtractor: PdfExtractorService,
-    private examService: ExamService,
-    private router: Router
-  ) {}
+  private checkAuth(): boolean {
+    if (!this.authService.currentUser) {
+      this.router.navigate(['/login'], { queryParams: { returnUrl: this.router.url } });
+      return false;
+    }
+    return true;
+  }
 
   // ─── Step 1 ───────────────────────────────────────────────────────────────────
 
@@ -103,7 +111,7 @@ export class GenerateComponent {
   }
 
   fetchCustomSyllabus() {
-    if (!this.customExamName.trim()) return;
+    if (!this.customExamName.trim() || !this.checkAuth()) return;
 
     this.isFetchingSyllabus = true;
     this.errorMessage = '';
@@ -202,7 +210,7 @@ export class GenerateComponent {
   // ─── Generation ───────────────────────────────────────────────────────────────
 
   generate() {
-    if (!this.selectedExam || !this.canProceedStep2) return;
+    if (!this.selectedExam || !this.canProceedStep2 || !this.checkAuth()) return;
 
     const selectedTopicsPayload = this.subjectSelections
       .filter(s => s.selectedTopics.size > 0)

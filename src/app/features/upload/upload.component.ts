@@ -1,10 +1,11 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { ExamService } from '../../core/services/exam.service';
 import { PdfExtractorService } from '../../core/services/pdf-extractor.service';
+import { AuthService } from '../../core/services/auth.service';
 import { LucideAngularModule, UploadCloud, FileText, CheckCircle2, Sparkles, BookOpen } from 'lucide-angular';
-import { finalize } from 'rxjs';
+import { finalize, take } from 'rxjs';
 import { FormsModule } from '@angular/forms';
 
 type Difficulty = 'easy' | 'medium' | 'hard';
@@ -17,6 +18,11 @@ type Difficulty = 'easy' | 'medium' | 'hard';
   styleUrls: ['./upload.component.css']
 })
 export class UploadComponent {
+  private pdfExtractor = inject(PdfExtractorService);
+  private examService = inject(ExamService);
+  private router = inject(Router);
+  private authService = inject(AuthService);
+
   isExtracting = false;
   selectedFile: File | null = null;
   loadingStep = '';
@@ -43,11 +49,13 @@ export class UploadComponent {
     { value: 'hard',   label: 'Hard',   desc: 'Advanced problems, challenging scenarios' },
   ];
 
-  constructor(
-    private pdfExtractor: PdfExtractorService,
-    private examService: ExamService,
-    private router: Router
-  ) {}
+  private checkAuth(): boolean {
+    if (!this.authService.currentUser) {
+      this.router.navigate(['/login'], { queryParams: { returnUrl: this.router.url } });
+      return false;
+    }
+    return true;
+  }
 
   onFileSelected(event: any) {
     const file = event.target.files[0];
@@ -58,7 +66,7 @@ export class UploadComponent {
   }
 
   startExtraction() {
-    if (!this.selectedFile) return;
+    if (!this.selectedFile || !this.checkAuth()) return;
 
     this.isExtracting = true;
     this.errorMessage = '';
@@ -99,7 +107,7 @@ export class UploadComponent {
   }
 
   generateFromContent() {
-    if (!this.selectedFile) return;
+    if (!this.selectedFile || !this.checkAuth()) return;
 
     this.showGenerateDialog = false;
     this.isGenerating = true;

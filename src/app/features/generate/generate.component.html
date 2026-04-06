@@ -14,24 +14,12 @@
     </div>
   </div>
 
-  <!-- Header -->
-  <div class="gen-header">
-    <button class="back-btn" (click)="goBack()">
-      <lucide-icon [img]="ArrowLeft" [size]="16"></lucide-icon>
-      Back
-    </button>
-    <div class="header-brand">
-      <img src="logo.png" alt="ExamGenie" class="header-logo">
-      <span class="header-title">ExamGenie</span>
-    </div>
-    <div class="header-badge">
-      <lucide-icon [img]="Zap" [size]="14"></lucide-icon>
-      AI-Powered
-    </div>
-  </div>
-
-  <!-- Page Title -->
+  <!-- Page Title & Back Button -->
   <div class="gen-title-section">
+    <button class="back-link" (click)="goBack()">
+      <lucide-icon [img]="ArrowLeft" [size]="16"></lucide-icon>
+      Back to Home
+    </button>
     <h1 class="gen-main-title">
       Generate Questions as per
       <span class="gradient-text">Your Exam</span>
