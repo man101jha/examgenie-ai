@@ -1,4 +1,5 @@
 const fs = require('fs');
+const path = require('path');
 
 // The Vercel Environment Variables
 const apiKey = process.env.GEMINI_API_KEY;
@@ -28,12 +29,18 @@ export const environment = {
 };
 `;
 
-console.log('Injecting Vercel Environment Variables into environment.prod.ts...');
+const dir = './src/environments';
+if (!fs.existsSync(dir)) {
+    fs.mkdirSync(dir, { recursive: true });
+}
 
-fs.writeFile('./src/environments/environment.prod.ts', envConfigFile, function (err) {
-  if (err) {
-    console.log(err);
-  } else {
-    console.log('Successfully injected environment variables!');
-  }
-});
+console.log('Injecting Vercel Environment Variables into environment files...');
+
+try {
+    fs.writeFileSync(path.join(dir, 'environment.prod.ts'), envConfigFile);
+    fs.writeFileSync(path.join(dir, 'environment.ts'), envConfigFile);
+    console.log('Successfully injected environment variables into environment.ts and environment.prod.ts!');
+} catch (err) {
+    console.error('Error writing environment files:', err);
+    process.exit(1);
+}
